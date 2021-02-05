@@ -1,0 +1,82 @@
+---
+#- hosts: local
+#  tasks:
+
+    - name: Creates nvim and autoload folder
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: /home/kevin/.config/nvim/autoload
+        state: directory
+        owner: kevin
+        group: kevin
+
+    - name: Symlink init.vim
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/dotfiles/nvim/init.vim
+        dest: /home/kevin/.config/nvim/init.vim
+        state: link
+        owner: kevin
+        group: kevin
+
+    - name: Symlink nvim plugin
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/dotfiles/nvim/plugin/
+        dest: /home/kevin/.config/nvim/plugin
+        state: link
+        owner: kevin
+        group: kevin
+
+    - name: Symlink vim-plug
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/vim-plug/plug.vim
+        dest: /home/kevin/.config/nvim/autoload/plug.vim
+        state: link
+        owner: kevin
+        group: kevin
+
+    - name: Symlink tig
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/dotfiles/tig/
+        dest: /home/kevin/.config/tig
+        state: link
+        owner: kevin
+        group: kevin
+
+    - name: Symlink tigrc
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /home/kevin/.config/tig/tigrc
+        dest: /home/kevin/.tigrc
+        state: link
+        owner: kevin
+        group: kevin
+
+    - name: Symlink gitconfig
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/dotfiles/git/gitconfig
+        dest: /home/kevin/.gitconfig
+        state: link
+        owner: kevin
+        group: kevin
+
+#    - name: Copy user.gitconfig
+#      become: true
+#      become_user: root
+#      ansible.builtin.copy:
+#        src: /repos/dotfiles/git/user.gitconfig
+#        remote_src: true
+#        dest: /home/kevin/user.gitconfig
+#        owner: kevin
+#        group: kevin

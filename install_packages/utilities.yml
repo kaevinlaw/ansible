@@ -1,0 +1,22 @@
+---
+#- hosts: local
+#  tasks:
+    - name: install packages
+      become: true
+      become_user: root
+      apt:
+        state: present
+        name:
+          - neovim
+          - tmux
+          - git
+          - tig
+          - curl
+          - rsync
+          - ripgrep
+          - fzf
+          - samba
+          - nodejs
+          - npm
+          - ncdu
+        update_cache: yes

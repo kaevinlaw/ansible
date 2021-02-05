@@ -1,0 +1,9 @@
+---
+- hosts: local
+  gather_facts: no
+
+  tasks:
+    - include: ../install_packages/utilities.yml
+    - include: ../git_clone/git_clone.yml
+    - include: ../symlink/dotfiles.yml
+

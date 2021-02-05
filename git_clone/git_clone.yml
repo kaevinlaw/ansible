@@ -1,0 +1,31 @@
+---
+#- hosts: local
+#  tasks:
+    - name: checkout dotfiles
+      become: true
+      become_user: root
+      git:
+        repo: 'https://github.com/kaevinlaw/dotfiles.git'
+        dest: /repos/dotfiles
+        depth: 1
+    - name: checkout vim-plug
+      become: true
+      become_user: root
+      git:
+        repo: 'https://github.com/junegunn/vim-plug.git'
+        dest: /repos/vim-plug
+        depth: 1
+#    - name: checkout fzf
+#      become: true
+#      become_user: root
+#      git:
+#        repo: 'https://github.com/junegunn/fzf.git'
+#        dest: /repos/fzf
+#        depth: 1
+#    - name: checkout bat
+#      become: true
+#      become_user: root
+#      git:
+#        repo: 'https://github.com/sharkdp/bat.git'
+#        dest: /repos/bat
+#        depth: 1
