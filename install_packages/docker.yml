@@ -1,0 +1,48 @@
+---
+- hosts: local
+  tasks:
+    - name: install required packages
+      become: true
+      become_user: root
+      apt:
+        state: present
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - gnupg-agent
+          - software-properties-common
+        update_cache: yes
+
+    - name: adds dockers official gpg key
+      become: true
+      become_user: root
+      ansible.builtin.apt_key:
+          url: https://download.docker.com/linux/ubuntu/gpg
+          state: present
+
+#    - name: adds dockers official gpg key
+#      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+#    - name: get ubuntu name
+#      shell: lsb_release -cs 
+#      register: ubuntu_name
+#    - debug: msg={{ubuntu_name}}
+
+    - name: adds dockers stable repository
+      ansible.builtin.apt_repository: 
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+#        TODO: why {{ ubuntu_name }} here does not work?
+#        repo: deb https://download.docker.com/linux/ubuntu "{{ ubuntu_name }}" stable
+#        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+
+    - name: install docker packages
+      become: true
+      become_user: root
+      apt:
+        state: present
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        update_cache: yes
