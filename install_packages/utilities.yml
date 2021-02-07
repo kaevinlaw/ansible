@@ -1,22 +1,44 @@
 ---
-#- hosts: local
-#  tasks:
+- hosts: local
+  tasks:
     - name: install packages
       become: true
       become_user: root
       apt:
         state: present
         name:
+            #nvim
           - neovim
-          - tmux
-          - git
-          - tig
-          - curl
-          - rsync
           - ripgrep
           - fzf
-          - samba
+
+            #nodejs
           - nodejs
           - npm
+
+            #python
+          - python3
+          - python3-pip
+          - python3-distutils
+
+            #dev related
+          - clangd-10
+          - build-essential
+          - git
+          - tig
+
+            #misc admin
+          - tmux
+          - curl
+          - rsync
+          - samba
           - ncdu
         update_cache: yes
+    - name: update alternatives for clangd
+      become: true
+      become_user: root
+      alternatives:
+          name: clangd
+          link: /usr/bin/clangd
+          path: /usr/lib/llvm-10/bin/clangd
+          priority: 100
