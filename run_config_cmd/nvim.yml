@@ -5,8 +5,10 @@
     - name: Run plug install for nvim
       shell: nvim +'PlugInstall --sync' +qall &> /dev/null < /dev/tty
     - name: Run CocInstall on coc-clangd
-      shell: nvim +'CocInstall -sync coc-clangd' +qall &> /dev/null < /dev/tty
-    - name: Run CocInstall on coc-cmake
-      shell: nvim +'CocInstall -sync coc-cmake' +qall &> /dev/null < /dev/tty
-    - name: Run CocInstall on coc-python
-      shell: nvim +'CocInstall -sync coc-python' +qall &> /dev/null < /dev/tty
+      shell: nvim +'CocInstall -sync coc-clangd |q' &> /dev/null < /dev/tty
+#    - name: Run CocInstall on coc-clangd
+#      shell: nvim +'CocInstall -sync coc-clangd' +qall &> /dev/null < /dev/tty
+#    - name: Run CocInstall on coc-cmake
+#      shell: nvim +'CocInstall -sync coc-cmake' +qall &> /dev/null < /dev/tty
+#    - name: Run CocInstall on coc-python
+#      shell: nvim +'CocInstall -sync coc-python' +qall &> /dev/null < /dev/tty
