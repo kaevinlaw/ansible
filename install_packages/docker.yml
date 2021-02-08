@@ -12,6 +12,7 @@
           - gnupg-agent
           - software-properties-common
         update_cache: yes
+        install_recommends: no
 
     - name: adds dockers official gpg key
       become: true
@@ -20,20 +21,18 @@
           url: https://download.docker.com/linux/ubuntu/gpg
           state: present
 
-#    - name: adds dockers official gpg key
-#      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-
 #    - name: get ubuntu name
-#      shell: lsb_release -cs 
+#      shell: lsb_release -cs
 #      register: ubuntu_name
 #    - debug: msg={{ubuntu_name}}
 
     - name: adds dockers stable repository
-      ansible.builtin.apt_repository: 
+      ansible.builtin.apt_repository:
+#        repo: deb https://download.docker.com/linux/ubuntu groovy stable
         repo: deb https://download.docker.com/linux/ubuntu focal stable
         state: present
 #        TODO: why {{ ubuntu_name }} here does not work?
-#        repo: deb https://download.docker.com/linux/ubuntu "{{ ubuntu_name }}" stable
+#        repo: 'deb https://download.docker.com/linux/ubuntu {{ ubuntu_name }} stable'
 #        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
 
     - name: install docker packages
@@ -46,3 +45,4 @@
           - docker-ce-cli
           - containerd.io
         update_cache: yes
+        install_recommends: no
