@@ -26,6 +26,7 @@
           - build-essential
           - git
           - tig
+          - adb
 
             #misc admin
           - tmux
