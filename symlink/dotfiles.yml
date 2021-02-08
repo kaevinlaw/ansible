@@ -1,6 +1,6 @@
 ---
-#- hosts: local
-#  tasks:
+- hosts: local
+  tasks:
 
     - name: Creates nvim and autoload folder
       become: true
@@ -37,6 +37,26 @@
       ansible.builtin.file:
         src: /repos/vim-plug/plug.vim
         dest: /home/kevin/.config/nvim/autoload/plug.vim
+        state: link
+        owner: kevin
+        group: kevin
+
+    - name: Symlink tmux
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/dotfiles/tmux/
+        dest: /home/kevin/.config/tmux
+        state: link
+        owner: kevin
+        group: kevin
+
+    - name: Symlink tmux conf
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /home/kevin/.config/tmux/tmux.conf
+        dest: /home/kevin/.tmux.conf
         state: link
         owner: kevin
         group: kevin
