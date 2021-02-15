@@ -91,6 +91,25 @@
         owner: kevin
         group: kevin
 
+    - name: Creates i3 config
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: /home/kevin/.config/i3
+        state: directory
+        owner: kevin
+        group: kevin
+
+    - name: Symlink i3config
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/dotfiles/i3/i3config
+        dest: /home/kevin/.config/i3/config
+        state: link
+        owner: kevin
+        group: kevin
+
 #    - name: Copy user.gitconfig
 #      become: true
 #      become_user: root
