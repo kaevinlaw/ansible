@@ -1,0 +1,15 @@
+---
+- hosts: local
+  become: true
+  become_user: root
+  tasks:
+
+    - name: Create docker user group
+      ansible.builtin.group:
+        name: docker
+        state: present
+
+    - name: Add user to docker group
+      ansible.builtin.user:
+        name: kevin
+        group: docker
