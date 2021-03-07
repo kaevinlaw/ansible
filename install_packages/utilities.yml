@@ -11,6 +11,7 @@
           - neovim
           - ripgrep
           - fzf
+          - bat
 
             #nodejs
           - nodejs
@@ -22,11 +23,15 @@
           - python3-distutils
 
             #dev related
-          - clangd-10
+          - clangd-11
           - build-essential
           - git
           - tig
+          - repo
+
+            #android
           - adb
+          - fastboot
 
             #misc admin
           - tmux
@@ -42,5 +47,5 @@
       alternatives:
           name: clangd
           link: /usr/bin/clangd
-          path: /usr/lib/llvm-10/bin/clangd
+          path: /usr/lib/llvm-11/bin/clangd
           priority: 100
