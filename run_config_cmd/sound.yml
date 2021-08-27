@@ -1,0 +1,27 @@
+---
+- hosts: local
+  become: true
+  become_user: root
+  tasks:
+
+    - name: Create pulse user group
+      ansible.builtin.group:
+        name: pulse
+        state: present
+
+    - name: Create pulse-access user group
+      ansible.builtin.group:
+        name: pulse-access
+        state: present
+
+    - name: Add user to pulse group
+      ansible.builtin.user:
+        name: kevin
+        groups: pulse
+        append: yes
+
+    - name: Add user to pulse-access group
+      ansible.builtin.user:
+        name: kevin
+        group: pulse-access
+        append: yes
