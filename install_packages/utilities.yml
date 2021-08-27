@@ -23,7 +23,7 @@
           - python3-distutils
 
             #dev related
-          - clangd-11
+          - clangd-12
           - build-essential
           - git
           - tig
@@ -47,5 +47,5 @@
       alternatives:
           name: clangd
           link: /usr/bin/clangd
-          path: /usr/lib/llvm-11/bin/clangd
+          path: /usr/lib/llvm-12/bin/clangd
           priority: 100
