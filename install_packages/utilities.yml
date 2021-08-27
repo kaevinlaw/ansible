@@ -33,6 +33,15 @@
           - gdb
           - minicom
           - lnav
+          - autoconf
+          - automake
+          - bison
+          - libtool
+          - libtool-bin
+          - flex
+          - texinfo
+          - help2man
+          - libncurses-dev
 
             #android
           - adb
