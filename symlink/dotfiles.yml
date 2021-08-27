@@ -110,6 +110,44 @@
         owner: kevin
         group: kevin
 
+    - name: Creates kitty config
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: /home/kevin/.config/kitty
+        state: directory
+        owner: kevin
+        group: kevin
+
+    - name: Symlink kitty
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/dotfiles/kitty/kitty.conf
+        dest: /home/kevin/.config/kitty/kitty.conf
+        state: link
+        owner: kevin
+        group: kevin
+
+    - name: Creates picom config
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: /home/kevin/.config/picom
+        state: directory
+        owner: kevin
+        group: kevin
+
+    - name: Symlink picom
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/dotfiles/picom/picom.conf
+        dest: /home/kevin/.config/picom/picom.conf
+        state: link
+        owner: kevin
+        group: kevin
+
 #    - name: Copy user.gitconfig
 #      become: true
 #      become_user: root
