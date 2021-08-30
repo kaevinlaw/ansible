@@ -25,3 +25,10 @@
         name: kevin
         group: pulse-access
         append: yes
+
+    - name: disable terminal bell sound
+      lineinfile:
+        dest: /etc/inputrc
+        regexp: '^#\s*set bell-style none'
+        line: 'set bell-style none'
+
