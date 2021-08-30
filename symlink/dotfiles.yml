@@ -148,6 +148,25 @@
         owner: kevin
         group: kevin
 
+    - name: Creates ytfzf config
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: /home/kevin/.config/ytfzf
+        state: directory
+        owner: kevin
+        group: kevin
+
+    - name: Symlink ytfzf
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: /repos/dotfiles/ytfzf/conf.sh
+        dest: /home/kevin/.config/ytfzf/conf.sh
+        state: link
+        owner: kevin
+        group: kevin
+
 #    - name: Copy user.gitconfig
 #      become: true
 #      become_user: root
