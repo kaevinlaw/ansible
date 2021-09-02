@@ -63,6 +63,7 @@
           - zip
           - unzip
           - p7zip
+          - lftp
 
             #ripgrep-all
           - pandoc
