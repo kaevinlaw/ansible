@@ -1,0 +1,16 @@
+---
+- hosts: local
+  tasks:
+    - name: install podman
+      become: true
+      become_user: root
+      apt:
+        state: present
+        name:
+          - uidmap
+          - shadow-utils
+          - newuid
+          - fuse-overlayfs
+          - podman
+        update_cache: yes
+        install_recommends: no
