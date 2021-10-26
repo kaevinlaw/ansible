@@ -64,6 +64,8 @@
           - unzip
           - p7zip
           - lftp
+          - tcpdump
+          - dnsutils
 
             #ripgrep-all
           - pandoc
