@@ -7,6 +7,8 @@
       apt:
         state: fixed
         name:
+          - kitty
+          - imagemagick
           - xorg
           - xinit
           - xauth
