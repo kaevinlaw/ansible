@@ -1,0 +1,16 @@
+---
+- hosts: local
+  tasks:
+    - name: install packages for vbox guest additions
+      become: true
+      become_user: root
+      apt:
+        state: present
+        name:
+            #misc admin
+          - dkms
+          - build-essential
+          - "linux-headers-{{ ansible_kernel }}"
+          - virtualbox-guest-additions-iso
+        update_cache: yes
+        install_recommends: no
