@@ -1,5 +1,6 @@
 ---
 - hosts: local
+  gather_facts: yes
   tasks:
     - name: install required packages
       become: true
@@ -37,5 +38,6 @@
           - docker-ce
           - docker-ce-cli
           - containerd.io
+          - docker-compose
         update_cache: yes
         install_recommends: no
