@@ -18,5 +18,8 @@
           - feh
           - picom
           - conky
+          - qutebrowser
+          #- lightdm
+          #- xubuntu-core
         update_cache: yes
         install_recommends: no

@@ -1,9 +1,16 @@
 ---
 - hosts: local
   gather_facts: no
-
   tasks:
-    - include: ../install_packages/utilities.yml
-    - include: ../git_clone/git_clone.yml
-    - include: ../symlink/dotfiles.yml
+    # provides add-apt-repository, used to add PPAs (apt-key is gone in modern ubuntu)
+    - name: install software-properties-common
+      become: true
+      become_user: root
+      apt:
+        name: software-properties-common
+        state: present
+        update_cache: yes
 
+- import_playbook: ../install_packages/utilities.yml
+- import_playbook: ../git_clone/git_clone.yml
+- import_playbook: ../symlink/dotfiles.yml
