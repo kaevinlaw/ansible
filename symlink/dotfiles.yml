@@ -15,7 +15,7 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/dotfiles/nvim/init.vim
+        src: "{{ repos_root }}/dotfiles/nvim/init.vim"
         dest: "{{ target_home }}/.config/nvim/init.vim"
         state: link
         owner: "{{ target_user }}"
@@ -25,7 +25,7 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/dotfiles/nvim/plugin/
+        src: "{{ repos_root }}/dotfiles/nvim/plugin/"
         dest: "{{ target_home }}/.config/nvim/plugin"
         state: link
         owner: "{{ target_user }}"
@@ -35,9 +35,10 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/vim-plug/plug.vim
+        src: "{{ repos_root }}/vim-plug/plug.vim"
         dest: "{{ target_home }}/.config/nvim/autoload/plug.vim"
         state: link
+        force: yes
         owner: "{{ target_user }}"
         group: "{{ target_group }}"
 
@@ -45,7 +46,7 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/dotfiles/tmux/
+        src: "{{ repos_root }}/dotfiles/tmux/"
         dest: "{{ target_home }}/.config/tmux"
         state: link
         owner: "{{ target_user }}"
@@ -65,7 +66,7 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/dotfiles/tig/
+        src: "{{ repos_root }}/dotfiles/tig/"
         dest: "{{ target_home }}/.config/tig"
         state: link
         owner: "{{ target_user }}"
@@ -85,7 +86,7 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/dotfiles/git/gitconfig
+        src: "{{ repos_root }}/dotfiles/git/gitconfig"
         dest: "{{ target_home }}/.gitconfig"
         state: link
         owner: "{{ target_user }}"
@@ -104,7 +105,7 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/dotfiles/i3/i3config
+        src: "{{ repos_root }}/dotfiles/i3/i3config"
         dest: "{{ target_home }}/.config/i3/config"
         state: link
         owner: "{{ target_user }}"
@@ -123,7 +124,7 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/dotfiles/kitty/kitty.conf
+        src: "{{ repos_root }}/dotfiles/kitty/kitty.conf"
         dest: "{{ target_home }}/.config/kitty/kitty.conf"
         state: link
         owner: "{{ target_user }}"
@@ -142,7 +143,7 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/dotfiles/picom/picom.conf
+        src: "{{ repos_root }}/dotfiles/picom/picom.conf"
         dest: "{{ target_home }}/.config/picom/picom.conf"
         state: link
         owner: "{{ target_user }}"
@@ -161,7 +162,7 @@
       become: true
       become_user: root
       ansible.builtin.file:
-        src: /repos/dotfiles/ytfzf/conf.sh
+        src: "{{ repos_root }}/dotfiles/ytfzf/conf.sh"
         dest: "{{ target_home }}/.config/ytfzf/conf.sh"
         state: link
         owner: "{{ target_user }}"
@@ -171,7 +172,7 @@
 #      become: true
 #      become_user: root
 #      ansible.builtin.copy:
-#        src: /repos/dotfiles/git/user.gitconfig
+#        src: "{{ repos_root }}/dotfiles/git/user.gitconfig"
 #        remote_src: true
 #        dest: "{{ target_home }}/user.gitconfig"
 #        owner: "{{ target_user }}"
