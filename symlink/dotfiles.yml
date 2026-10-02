@@ -28,7 +28,7 @@
       become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/nvim/plugin/"
-        dest: "{{ target_home }}/.config/nvim/plugin"
+        dest: "{{ target_home }}/.config/nvim/plugin_config"
         state: link
         owner: "{{ target_user }}"
         group: "{{ target_group }}"
