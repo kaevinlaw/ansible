@@ -11,13 +11,23 @@
         owner: "{{ target_user }}"
         group: "{{ target_group }}"
 
-
     - name: Symlink init.lua
       become: true
       become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/nvim/init.lua"
         dest: "{{ target_home }}/.config/nvim/init.lua"
+        state: link
+        force: yes
+        owner: "{{ target_user }}"
+        group: "{{ target_group }}"
+
+    - name: Symlink init.lua
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: "{{ repos_dir }}/dotfiles/nvim/lua"
+        dest: "{{ target_home }}/.config/nvim/lua"
         state: link
         force: yes
         owner: "{{ target_user }}"
