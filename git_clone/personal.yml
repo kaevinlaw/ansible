@@ -1,0 +1,50 @@
+---
+- hosts: local
+  tasks:
+    - name: clone vimviki
+      ansible.builtin.git:
+        repo: 'git@github.com:kaevinlaw/vimviki.git'
+        dest: "{{ repos_dir }}/vimviki"
+        version: main
+        key_file: "{{ target_github_key }}"
+        accept_hostkey: true
+
+    - name: clone fin (plutus)
+      ansible.builtin.git:
+        repo: 'git@github.com:kaevinlaw/fin.git'
+        dest: "{{ repos_dir }}/fin"
+        version: main
+        key_file: "{{ target_github_key }}"
+        accept_hostkey: true
+
+    - name: clone health_track
+      ansible.builtin.git:
+        repo: 'git@github.com:kaevinlaw/health_track.git'
+        dest: "{{ repos_dir }}/health_track"
+        version: main
+        key_file: "{{ target_github_key }}"
+        accept_hostkey: true
+
+    - name: clone fenix7_batt
+      ansible.builtin.git:
+        repo: 'git@github.com:kaevinlaw/fenix7_batt.git'
+        dest: "{{ repos_dir }}/fenix7_batt"
+        version: main
+        key_file: "{{ target_github_key }}"
+        accept_hostkey: true
+
+    - name: clone vibe
+      ansible.builtin.git:
+        repo: 'git@github.com:kaevinlaw/vibe.git'
+        dest: "{{ repos_dir }}/vibe"
+        version: main
+        key_file: "{{ target_github_key }}"
+        accept_hostkey: true
+
+    - name: clone dockers
+      ansible.builtin.git:
+        repo: 'git@github.com:kaevinlaw/dockers.git'
+        dest: "{{ repos_dir }}/dockers"
+        version: main
+        key_file: "{{ target_github_key }}"
+        accept_hostkey: true
