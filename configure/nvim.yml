@@ -2,10 +2,22 @@
 - hosts: local
   become: no
   tasks:
-    - name: Run plug install for nvim
-      shell: nvim +'PlugInstall --sync' +qall &> /dev/null < /dev/tty
-    - name: Run CocInstall on coc-clangd
-      shell: nvim +'CocInstall -sync coc-clangd |q' &> /dev/null < /dev/tty
+    - name: Ensure Node.js and npm are installed
+      become: true
+      ansible.builtin.apt:
+        name:
+          - nodejs
+          - npm
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install tree-sitter CLI globally via npm
+      become: true
+      community.general.npm:
+        name: tree-sitter-cli
+        global: true
+        state: present
 #    - name: Run CocInstall on coc-clangd
 #      shell: nvim +'CocInstall -sync coc-clangd' +qall &> /dev/null < /dev/tty
 #    - name: Run CocInstall on coc-cmake
