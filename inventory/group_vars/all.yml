@@ -1,0 +1,12 @@
+---
+# Variables applied to every host in this inventory.
+# Override per group in group_vars/<group>.yml, per host in host_vars/<host>.yml,
+# or at run time with: ansible-playbook ... -e target_user=someone
+
+# The user whose environment is being set up (owns dotfiles, joins docker group, ...)
+target_user: kevinlaw
+target_group: "{{ target_user }}"
+target_home: "/home/{{ target_user }}"
+
+# Where git repos (dotfiles, vim-plug, ...) are cloned and symlinked from
+repos_dir: "{{ target_home }}/repos"

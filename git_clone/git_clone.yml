@@ -4,20 +4,20 @@
     - name: checkout dotfiles
       git:
         repo: 'https://github.com/kaevinlaw/dotfiles.git'
-        dest: /repos/dotfiles
+        dest: "{{ repos_dir }}/dotfiles"
         depth: 1
     - name: checkout vim-plug
       git:
         repo: 'https://github.com/junegunn/vim-plug.git'
-        dest: /repos/vim-plug
+        dest: "{{ repos_dir }}/vim-plug"
         depth: 1
 #    - name: checkout fzf
 #      git:
 #        repo: 'https://github.com/junegunn/fzf.git'
-#        dest: /repos/fzf
+#        dest: "{{ repos_dir }}/fzf"
 #        depth: 1
 #    - name: checkout bat
 #      git:
 #        repo: 'https://github.com/sharkdp/bat.git'
-#        dest: /repos/bat
+#        dest: "{{ repos_dir }}/bat"
 #        depth: 1
