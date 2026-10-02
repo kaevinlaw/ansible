@@ -18,6 +18,10 @@
         name: tree-sitter-cli
         global: true
         state: present
+
+    - name: Install/update nvim plugins with lazy
+      ansible.builtin.command: nvim --headless "+Lazy! sync" +qa
+      changed_when: false
 #    - name: Run CocInstall on coc-clangd
 #      shell: nvim +'CocInstall -sync coc-clangd' +qall &> /dev/null < /dev/tty
 #    - name: Run CocInstall on coc-cmake
