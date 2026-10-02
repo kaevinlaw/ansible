@@ -6,6 +6,11 @@
         repo: 'https://github.com/kaevinlaw/dotfiles.git'
         dest: "{{ repos_dir }}/dotfiles"
         depth: 1
+#    - name: checkout vim-plug
+#      git:
+#        repo: 'https://github.com/junegunn/vim-plug.git'
+#        dest: "{{ repos_dir }}/vim-plug"
+#        depth: 1
 #    - name: checkout fzf
 #      git:
 #        repo: 'https://github.com/junegunn/fzf.git'
