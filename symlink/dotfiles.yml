@@ -11,16 +11,6 @@
         owner: "{{ target_user }}"
         group: "{{ target_group }}"
 
-    - name: Symlink init.vim
-      become: true
-      become_user: root
-      ansible.builtin.file:
-        src: "{{ repos_dir }}/dotfiles/nvim/init.vim"
-        dest: "{{ target_home }}/.config/nvim/init.vim"
-        state: link
-        force: yes
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink init.lua
       become: true
@@ -43,15 +33,6 @@
         owner: "{{ target_user }}"
         group: "{{ target_group }}"
 
-    - name: Symlink vim-plug
-      become: true
-      become_user: root
-      ansible.builtin.file:
-        src: "{{ repos_dir }}/vim-plug/plug.vim"
-        dest: "{{ target_home }}/.config/nvim/autoload/plug.vim"
-        state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink tmux
       become: true
