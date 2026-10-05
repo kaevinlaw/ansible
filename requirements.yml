@@ -1,0 +1,6 @@
+---
+# Collections needed beyond ansible-core's ansible.builtin.
+# Install once per machine (before running any playbook):
+#   ansible-galaxy collection install -r requirements.yml
+collections:
+  - name: community.general   # npm (configure/nvim.yml)
