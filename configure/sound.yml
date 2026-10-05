@@ -16,14 +16,14 @@
 
     - name: Add user to pulse group
       ansible.builtin.user:
-        name: kevin
+        name: "{{ target_user }}"
         groups: pulse
         append: yes
 
     - name: Add user to pulse-access group
       ansible.builtin.user:
-        name: kevin
-        group: pulse-access
+        name: "{{ target_user }}"
+        groups: pulse-access
         append: yes
 
     - name: disable terminal bell sound
