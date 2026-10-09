@@ -1,0 +1,29 @@
+---
+# fcitx5 + Quick Classic (速成) for Ubuntu 26.04 GNOME (Wayland)
+# Packages only. Config files and settings: see ~/vimviki/linux/fcitx5_quick.md
+- hosts: local
+  tasks:
+    - name: install fcitx5 and quick classic
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        state: present
+        name:
+          - im-config                          # im-config -n fcitx5 (writes ~/.xinputrc)
+          - fcitx5
+          - fcitx5-table-quick-classic         # pulls fcitx5-table (table engine)
+          - fcitx5-frontend-all                # gtk3/gtk4/qt5/qt6 frontends
+          - fcitx5-config-qt                   # fcitx5-configtool
+          - gnome-shell-extension-appindicator # tray icon in GNOME top bar
+
+            # fonts
+          - fonts-noto-cjk                     # Noto Sans CJK TC: candidate list, sans-serif CJK fallback
+          - fonts-dejavu-core                  # DejaVu Sans: symbols Ubuntu Sans lacks (clock ∶ U+2236)
+          # - fonts-hanazono                   # CJK Ext A/B glyphs, rare chars instead of tofu
+
+            # not needed:
+            # fcitx5-table-extra       pulls quick5 etc, quick5 lists rare Ext B chars first
+            # fcitx5-chinese-addons    only for pinyin / trad-simp conversion
+            # fonts-noto-cjk-extra, fonts-wqy-*
+        update_cache: yes
+        install_recommends: no

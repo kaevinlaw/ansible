@@ -1,0 +1,42 @@
+---
+- hosts: local
+  gather_facts: yes
+  tasks:
+    - name: Install Fcitx5 and Chinese Quick packages for Ubuntu Desktop
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        state: present
+        update_cache: yes
+        install_recommends: no
+        name:
+          - im-config
+          - fcitx5
+          - fcitx5-config-qt
+          - fcitx5-chinese-addons
+          - fcitx5-table-extra          # Essential for the Chinese Quick method
+          - fcitx5-frontend-all         # Handles input hooks for GTK2/3/4 and Qt5/6 apps
+          - gnome-shell-extension-appindicator # Enables the top-panel tray icon in GNOME
+
+    - name: Ensure the user Fcitx5 layout config directory exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config/fcitx5/inputmethod"
+        state: directory
+        mode: '0755'
+
+    - name: Deploy custom Quick profile to replace the red icon with a clean text label
+      ansible.builtin.copy:
+        dest: "{{ ansible_env.HOME }}/.config/fcitx5/inputmethod/quick.conf"
+        mode: '0644'
+        content: |
+          [InputMethod]
+          Name=Quick
+          Icon=
+          Label=速
+          LangCode=zh_HK
+
+    - name: Tell Ubuntu to use Fcitx5 as the system input method framework
+      ansible.builtin.command: im-config -n fcitx5
+      register: im_config_out
+      changed_when: "'fcitx5' not in im_config_out.stdout"
+
