@@ -6,5 +6,15 @@
     - name: remap capslock to ctrl
       ansible.builtin.lineinfile:
         dest: /etc/default/keyboard
-        regexp: '^XKBOPTIONS=""'
+        regexp: '^XKBOPTIONS='        # replace whatever value is there, not only ""
         line: 'XKBOPTIONS="ctrl:nocaps"'
+      notify: apply keyboard config
+
+  handlers:
+    # /etc/default/keyboard is otherwise only read at boot. This re-applies it
+    # to the console and to new X sessions; the running session still needs a
+    # logout (or `setxkbmap -option ctrl:nocaps`).
+    - name: apply keyboard config
+      ansible.builtin.shell: |
+        udevadm trigger --subsystem-match=input --action=change
+        setupcon --force || true
