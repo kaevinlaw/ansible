@@ -1,0 +1,73 @@
+---
+# fcitx5 as input method + Quick Classic (速成) in the input method list.
+# Packages: install_packages/fcitx5_claude.yml. Log out/in afterwards.
+- hosts: local
+  become: true
+  become_user: "{{ target_user }}"
+  vars:
+    fcitx5_profile: "{{ target_home }}/.config/fcitx5/profile"
+  tasks:
+
+    - name: check fcitx5 is the input method
+      ansible.builtin.command: grep -qx 'run_im fcitx5' {{ target_home }}/.xinputrc
+      register: xinputrc
+      changed_when: false
+      failed_when: false
+
+    - name: set fcitx5 as input method (writes ~/.xinputrc)
+      ansible.builtin.command: im-config -n fcitx5
+      when: xinputrc.rc != 0
+
+    - name: create fcitx5 config dir
+      ansible.builtin.file:
+        path: "{{ target_home }}/.config/fcitx5"
+        state: directory
+        mode: '0755'
+
+    # content as fcitx5 writes it, so fcitx5 rewriting it on exit is not a change
+    - name: check fcitx5 profile
+      ansible.builtin.copy: &profile
+        dest: "{{ fcitx5_profile }}"
+        mode: '0600'
+        content: |
+          [Groups/0]
+          # Group Name
+          Name=Default
+          # Layout
+          Default Layout=us
+          # Default Input Method
+          DefaultIM=quick-classic
+
+          [Groups/0/Items/0]
+          # Name
+          Name=keyboard-us
+          # Layout
+          Layout=
+
+          [Groups/0/Items/1]
+          # Name
+          Name=quick-classic
+          # Layout
+          Layout=
+
+          [GroupOrder]
+          0=Default
+
+      check_mode: true
+      register: profile_check
+
+    # a running fcitx5 saves its own profile on exit and would undo the change
+    - name: stop fcitx5 before changing its profile
+      ansible.builtin.command: pkill -u {{ target_user }} -x fcitx5
+      register: fcitx5_stop
+      when: profile_check.changed
+      changed_when: fcitx5_stop.rc == 0
+      failed_when: fcitx5_stop.rc > 1
+
+    - name: input methods - keyboard-us, quick-classic
+      ansible.builtin.copy: *profile
+
+    - name: restart note
+      ansible.builtin.debug:
+        msg: "fcitx5 was stopped: start it again with 'fcitx5 -d' or log out/in"
+      when: fcitx5_stop is changed
