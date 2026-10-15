@@ -58,6 +58,15 @@
       ansible.builtin.command: im-config -n fcitx5
       when: xinputrc.rc != 0
 
+    # kitty on X11 only talks IBus to input methods (fcitx5 has an IBus frontend);
+    # on Wayland it uses text-input and ignores this. Only X sessions read .xsessionrc
+    - name: kitty on X11 - use fcitx5 through its IBus frontend
+      ansible.builtin.lineinfile:
+        path: "{{ target_home }}/.xsessionrc"
+        line: export GLFW_IM_MODULE=ibus
+        create: true
+        mode: '0644'
+
     - name: create fcitx5 config dirs
       ansible.builtin.file:
         path: "{{ item }}"
