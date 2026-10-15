@@ -1,0 +1,32 @@
+---
+# Chromium as a real .deb from the xtradeb PPA. Ubuntu itself only ships
+# chromium-browser, a wrapper that installs the snap.
+- hosts: local
+  become: true
+  become_user: root
+  tasks:
+    - name: add xtradeb apps PPA
+      command: add-apt-repository -y ppa:xtradeb/apps
+      args:
+        creates: /etc/apt/sources.list.d/xtradeb-ubuntu-apps-{{ ansible_facts['distribution_release'] }}.sources
+
+    # The PPA carries many other apps; keep them from replacing Ubuntu's
+    # packages and only take chromium (chromium, chromium-common, -driver, ...).
+    - name: pin chromium to the xtradeb PPA
+      ansible.builtin.copy:
+        dest: /etc/apt/preferences.d/chromium-ppa
+        mode: "0644"
+        content: |
+          Package: chromium*
+          Pin: release o=LP-PPA-xtradeb-apps
+          Pin-Priority: 1001
+
+          Package: *
+          Pin: release o=LP-PPA-xtradeb-apps
+          Pin-Priority: 100
+
+    - name: install chromium
+      apt:
+        name: chromium
+        state: present
+        update_cache: yes
