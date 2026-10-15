@@ -1,35 +1,17 @@
 ---
-# fcitx5 as input method + Quick Classic (速成) in the input method list.
+# fcitx5 as input method + Quick Classic (速成) in the input method list,
+# tray icon as text (速) and Noto Sans CJK TC for candidates/menu/tray.
 # Packages: install_packages/fcitx5_claude.yml. Log out/in afterwards.
 - hosts: local
   become: true
   become_user: "{{ target_user }}"
   vars:
-    fcitx5_profile: "{{ target_home }}/.config/fcitx5/profile"
-  tasks:
-
-    - name: check fcitx5 is the input method
-      ansible.builtin.command: grep -qx 'run_im fcitx5' {{ target_home }}/.xinputrc
-      register: xinputrc
-      changed_when: false
-      failed_when: false
-
-    - name: set fcitx5 as input method (writes ~/.xinputrc)
-      ansible.builtin.command: im-config -n fcitx5
-      when: xinputrc.rc != 0
-
-    - name: create fcitx5 config dir
-      ansible.builtin.file:
-        path: "{{ target_home }}/.config/fcitx5"
-        state: directory
-        mode: '0755'
-
-    # content as fcitx5 writes it, so fcitx5 rewriting it on exit is not a change
-    - name: check fcitx5 profile
-      ansible.builtin.copy: &profile
-        dest: "{{ fcitx5_profile }}"
-        mode: '0600'
-        content: |
+    fcitx5_dir: "{{ target_home }}/.config/fcitx5"
+    # content as fcitx5 writes it, so fcitx5 rewriting them on exit is not a change.
+    # no mode: fcitx5 keeps its own permissions when it saves
+    fcitx5_files:
+      - dest: "{{ fcitx5_dir }}/profile"
+        content: |+
           [Groups/0]
           # Group Name
           Name=Default
@@ -53,19 +35,62 @@
           [GroupOrder]
           0=Default
 
-      check_mode: true
-      register: profile_check
+      # light panel: add TrayTextColor=#000000 and TrayOutlineColor=#ffffff
+      - dest: "{{ fcitx5_dir }}/conf/classicui.conf"
+        content: |
+          # Candidate window font
+          Font="Noto Sans CJK TC 11"
+          # Menu font
+          MenuFont="Noto Sans CJK TC 11"
+          # Tray font
+          TrayFont="Noto Sans CJK TC Bold 10"
+          # Prefer Text Icon
+          PreferTextIcon=True
+  tasks:
 
-    # a running fcitx5 saves its own profile on exit and would undo the change
-    - name: stop fcitx5 before changing its profile
+    - name: check fcitx5 is the input method
+      ansible.builtin.command: grep -qx 'run_im fcitx5' {{ target_home }}/.xinputrc
+      register: xinputrc
+      changed_when: false
+      failed_when: false
+
+    - name: set fcitx5 as input method (writes ~/.xinputrc)
+      ansible.builtin.command: im-config -n fcitx5
+      when: xinputrc.rc != 0
+
+    - name: create fcitx5 config dirs
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - "{{ fcitx5_dir }}"
+        - "{{ fcitx5_dir }}/conf"
+
+    - name: check fcitx5 config files
+      ansible.builtin.copy:
+        dest: "{{ item.dest }}"
+        content: "{{ item.content }}"
+      loop: "{{ fcitx5_files }}"
+      loop_control:
+        label: "{{ item.dest }}"
+      check_mode: true
+      register: fcitx5_check
+
+    # a running fcitx5 saves its own config on exit and would undo the change
+    - name: stop fcitx5 before changing its config
       ansible.builtin.command: pkill -u {{ target_user }} -x fcitx5
       register: fcitx5_stop
-      when: profile_check.changed
+      when: fcitx5_check.changed
       changed_when: fcitx5_stop.rc == 0
       failed_when: fcitx5_stop.rc > 1
 
-    - name: input methods - keyboard-us, quick-classic
-      ansible.builtin.copy: *profile
+    - name: fcitx5 config - input methods, tray text icon, fonts
+      ansible.builtin.copy:
+        dest: "{{ item.dest }}"
+        content: "{{ item.content }}"
+      loop: "{{ fcitx5_files }}"
+      loop_control:
+        label: "{{ item.dest }}"
 
     - name: restart note
       ansible.builtin.debug:
