@@ -1,0 +1,47 @@
+---
+# Firefox as a real .deb from the Mozilla Team PPA. Ubuntu's own "firefox"
+# package is a wrapper (1:1snap1) that installs the snap; Xubuntu ships the snap.
+- hosts: local
+  become: true
+  become_user: root
+  tasks:
+    - name: add mozillateam PPA
+      command: add-apt-repository -y ppa:mozillateam/ppa
+      args:
+        creates: /etc/apt/sources.list.d/mozillateam-ubuntu-ppa-{{ ansible_facts['distribution_release'] }}.sources
+
+    # Ubuntu's wrapper has epoch 1 (1:1snap1), which outranks any PPA version,
+    # so the PPA needs priority > 1000. The rest of the PPA (thunderbird, ...)
+    # is kept from replacing Ubuntu's packages.
+    - name: pin firefox to the mozillateam PPA
+      ansible.builtin.copy:
+        dest: /etc/apt/preferences.d/mozilla-firefox
+        mode: "0644"
+        content: |
+          Package: firefox*
+          Pin: release o=LP-PPA-mozillateam
+          Pin-Priority: 1001
+
+          Package: *
+          Pin: release o=LP-PPA-mozillateam
+          Pin-Priority: 100
+
+    # firefox security updates come from the PPA, not Ubuntu
+    - name: let unattended-upgrades install firefox from the PPA
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+        mode: "0644"
+        content: |
+          Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";
+
+    - name: install firefox
+      apt:
+        name: firefox
+        state: latest   # replaces Ubuntu's snap wrapper if it's installed
+        update_cache: yes
+
+    # after the deb is in place, so there's always a browser
+    - name: remove the firefox snap
+      command: snap remove --purge firefox
+      args:
+        removes: /snap/bin/firefox
