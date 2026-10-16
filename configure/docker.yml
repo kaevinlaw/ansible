@@ -2,6 +2,11 @@
 - hosts: local
   become: true
   become_user: root
+  vars:
+    # empty docker_storage_dir = keep docker's and containerd's default paths
+    docker_custom_storage: "{{ docker_storage_dir | default('', true) | length > 0 }}"
+    docker_data_root: "{{ docker_storage_dir ~ '/docker' if docker_custom_storage | bool else '/var/lib/docker' }}"
+    containerd_root: "{{ docker_storage_dir ~ '/containerd' if docker_custom_storage | bool else '/var/lib/containerd' }}"
   tasks:
 
     - name: Create docker user group
@@ -28,3 +33,89 @@
         src: /etc/docker/daemon.json
       register: docker_daemon_json
       failed_when: false
+
+    - name: Configure daemon.json (data-root)
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        mode: "0644"
+        content: "{{ (docker_daemon_current | combine({'data-root': docker_data_root})
+                      if docker_custom_storage | bool
+                      else docker_daemon_current | dict2items | rejectattr('key', 'equalto', 'data-root') | items2dict)
+                     | to_nice_json }}\n"
+        validate: dockerd --validate --config-file %s
+      vars:
+        docker_daemon_current: "{{ (docker_daemon_json.content | b64decode | from_json) if docker_daemon_json.content is defined else {} }}"
+      notify: restart docker
+
+    # images/snapshots (containerd image store) follow containerd's root
+    - name: Create docker storage directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0711"
+      loop:
+        - "{{ docker_storage_dir }}"
+        - "{{ docker_storage_dir }}/containerd"
+        - "{{ docker_storage_dir }}/docker"
+      when: docker_custom_storage | bool
+
+    # top-level key, so it goes before any [table]; replaces the commented
+    # default (#root = "/var/lib/containerd") that containerd.io ships
+    - name: Set containerd root
+      ansible.builtin.lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: '^#?\s*root\s*='
+        line: 'root = "{{ containerd_root }}"'
+        insertbefore: BOF
+        firstmatch: true
+      when: docker_custom_storage | bool
+      notify: restart containerd
+
+    # only an active (uncommented) root line; containerd then uses its default
+    - name: Reset containerd root to default
+      ansible.builtin.lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: '^\s*root\s*='
+        state: absent
+      when: not docker_custom_storage | bool
+      notify: restart containerd
+
+    - name: Enable and start docker
+      ansible.builtin.systemd_service:
+        name: docker
+        enabled: true
+        state: started
+      when: systemd_running.stat.exists
+
+    - name: Apply daemon.json now
+      ansible.builtin.meta: flush_handlers
+
+    - name: Check docker and containerd storage paths
+      ansible.builtin.shell: |
+        docker info --format '{{ '{{' }}.DockerRootDir{{ '}}' }}'
+        containerd config dump | sed -n "s/^root = '\(.*\)'/\1/p"
+      register: docker_storage_check
+      changed_when: false
+      failed_when: >-
+        docker_storage_check.stdout_lines !=
+        [docker_data_root, containerd_root]
+      when: systemd_running.stat.exists
+
+  handlers:
+    # listed before "restart docker" so containerd is back up first
+    - name: restart containerd
+      ansible.builtin.systemd_service:
+        name: containerd
+        state: restarted
+      when: systemd_running.stat.exists
+
+    # Restarting the daemon stops running containers (unless live-restore is
+    # set). When docker_storage_dir changes, old data stays at the old path
+    # (hidden) until pulled/created again.
+    - name: restart docker
+      ansible.builtin.systemd_service:
+        name: docker
+        state: restarted
+      when: systemd_running.stat.exists
