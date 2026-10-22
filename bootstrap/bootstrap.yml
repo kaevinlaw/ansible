@@ -17,3 +17,4 @@
 - import_playbook: ../configure/nvim.yml
 - import_playbook: ../git_clone/personal.yml
 - import_playbook: ../symlink/personal.yml
+- import_playbook: ../symlink/work.yml

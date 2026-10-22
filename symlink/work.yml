@@ -1,0 +1,57 @@
+---
+# Work helper scripts from repos/vibe/fwtools into ~/.local/bin, which is
+# already on PATH so they are callable from anywhere.
+#
+# vibe is a private repo; this play is a no-op on a host that cannot clone it.
+# Requires git_clone/personal.yml to have cloned vibe first.
+- hosts: local
+  vars:
+    work_scripts:
+      - fw-snapshot
+      - compdb-host
+      - git-status-subgits
+  tasks:
+
+    # vibe is private: on a host that cannot clone it, skip rather than abort
+    # the whole bootstrap run.
+    - name: Check whether the work scripts are present
+      ansible.builtin.stat:
+        path: "{{ repos_dir }}/vibe/fwtools"
+      register: work_scripts_dir
+
+    - name: Report skip when the scripts are not cloned
+      ansible.builtin.debug:
+        msg: "{{ repos_dir }}/vibe/fwtools not present - skipping work script symlinks"
+      when: not work_scripts_dir.stat.exists
+
+    - name: Create ~/.local/bin
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: "{{ target_home }}/.local/bin"
+        state: directory
+        owner: "{{ target_user }}"
+        group: "{{ target_group }}"
+        mode: "0755"
+      when: work_scripts_dir.stat.exists
+
+    # A symlink on PATH is only useful if the target itself is executable.
+    - name: Ensure work scripts are executable
+      ansible.builtin.file:
+        path: "{{ repos_dir }}/vibe/fwtools/{{ item }}"
+        mode: "0755"
+      loop: "{{ work_scripts }}"
+      when: work_scripts_dir.stat.exists
+
+    - name: Symlink work scripts into ~/.local/bin
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        src: "{{ repos_dir }}/vibe/fwtools/{{ item }}"
+        dest: "{{ target_home }}/.local/bin/{{ item }}"
+        state: link
+        force: yes
+        owner: "{{ target_user }}"
+        group: "{{ target_group }}"
+      loop: "{{ work_scripts }}"
+      when: work_scripts_dir.stat.exists
