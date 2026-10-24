@@ -77,5 +77,6 @@
           # ffmpeg
           - f2fs-tools
 
+          - exfatprogs
         update_cache: yes
         install_recommends: no
