@@ -14,5 +14,6 @@
           # for yt-fzf
           - jq
           - chafa
-          - youtube-dl
-          # - fzf already installe
+          # install via github with / curl / wget
+          # - yt-dlp
+          # - yt-x
