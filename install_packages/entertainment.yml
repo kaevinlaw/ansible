@@ -11,7 +11,6 @@
           - moc-ffmpeg-plugin
           - ffmpeg
           - mpv
-          # for yt-fzf
           - jq
           - chafa
           # install via github with / curl / wget

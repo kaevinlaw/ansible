@@ -60,7 +60,6 @@
           - tmux
           - curl
           - rsync
-            #- samba
           - ncdu
           - zip
           - unzip
@@ -68,7 +67,6 @@
           - lftp
           - tcpdump
           - bind9-dnsutils
-          #- vifm
 
             #ripgrep-all
           - pandoc
