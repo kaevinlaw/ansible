@@ -1,0 +1,26 @@
+---
+- hosts: local
+  vars:
+    local_bin: "{{ target_home }}/.local/bin"
+  tasks:
+    - name: Ensure dirs
+      ansible.builtin.file:
+        path: "{{ local_bin }}"
+        state: directory
+        mode: "0755"
+
+    # ========== fzf ==========
+    - name: Symlink fzf
+      ansible.builtin.file:
+        src: "{{ user_opt_dir }}/fzf/fzf"
+        dest: "{{ local_bin }}/fzf"
+        state: link
+        force: true
+
+    # ========== ripgrep ==========
+    - name: Symlink rg
+      ansible.builtin.file:
+        src: "{{ user_opt_dir }}/ripgrep/rg"
+        dest: "{{ local_bin }}/rg"
+        state: link
+        force: true

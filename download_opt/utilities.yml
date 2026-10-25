@@ -1,0 +1,100 @@
+---
+- hosts: local
+  vars:
+    fzf_arch: linux_amd64
+    rg_arch: x86_64-unknown-linux-musl
+  tasks:
+    - name: Ensure dirs
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ user_opt_dir }}/fzf"
+        - "{{ user_opt_dir }}/ripgrep"
+
+    # ========== fzf ==========
+    - name: Get latest fzf release tag
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/junegunn/fzf/releases/latest
+        return_content: true
+      register: fzf_rel
+
+    - name: Set fzf version (strip leading v)
+      ansible.builtin.set_fact:
+        fzf_ver: "{{ fzf_rel.json.tag_name | regex_replace('^v', '') }}"
+
+    - name: Download fzf tarball
+      ansible.builtin.get_url:
+        url: "https://github.com/junegunn/fzf/releases/download/v{{ fzf_ver }}/fzf-{{ fzf_ver }}-{{ fzf_arch }}.tar.gz"
+        dest: /tmp/fzf.tar.gz
+        mode: "0644"
+        force: true
+
+    - name: Extract fzf binary
+      ansible.builtin.unarchive:
+        src: /tmp/fzf.tar.gz
+        dest: /tmp
+        remote_src: true
+
+    - name: Install fzf atomically
+      ansible.builtin.copy:
+        src: /tmp/fzf
+        dest: "{{ user_opt_dir }}/fzf/fzf"
+        mode: "0755"
+        remote_src: true
+
+#    - name: Symlink fzf
+#      ansible.builtin.file:
+#        src: "{{ user_opt_dir }}/fzf/fzf"
+#        dest: "{{ local_bin }}/fzf"
+#        state: link
+#        force: true
+
+    # ========== ripgrep ==========
+    - name: Get latest ripgrep release tag
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/BurntSushi/ripgrep/releases/latest
+        return_content: true
+      register: rg_rel
+
+    - name: Set rg version
+      ansible.builtin.set_fact:
+        rg_ver: "{{ rg_rel.json.tag_name }}"
+
+    - name: Download ripgrep tarball
+      ansible.builtin.get_url:
+        url: "https://github.com/BurntSushi/ripgrep/releases/download/{{ rg_ver }}/ripgrep-{{ rg_ver }}-{{ rg_arch }}.tar.gz"
+        dest: /tmp/rg.tar.gz
+        mode: "0644"
+        force: true
+
+    - name: Extract ripgrep
+      ansible.builtin.unarchive:
+        src: /tmp/rg.tar.gz
+        dest: /tmp
+        remote_src: true
+
+    - name: Install rg atomically
+      ansible.builtin.copy:
+        src: "/tmp/ripgrep-{{ rg_ver }}-{{ rg_arch }}/rg"
+        dest: "{{ user_opt_dir }}/ripgrep/rg"
+        mode: "0755"
+        remote_src: true
+
+#    - name: Symlink rg
+#      ansible.builtin.file:
+#        src: "{{ user_opt_dir }}/ripgrep/rg"
+#        dest: "{{ local_bin }}/rg"
+#        state: link
+#        force: true
+
+    - name: Cleanup temp
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/fzf.tar.gz
+        - /tmp/fzf
+        - /tmp/rg.tar.gz
+        - "/tmp/ripgrep-{{ rg_ver }}-{{ rg_arch }}"
