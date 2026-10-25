@@ -8,18 +8,3 @@
         version: lua
         key_file: "{{ target_github_key }}"
         accept_hostkey: true
-#    - name: checkout vim-plug
-#      git:
-#        repo: 'https://github.com/junegunn/vim-plug.git'
-#        dest: "{{ repos_dir }}/vim-plug"
-#        depth: 1
-#    - name: checkout fzf
-#      git:
-#        repo: 'https://github.com/junegunn/fzf.git'
-#        dest: "{{ repos_dir }}/fzf"
-#        depth: 1
-#    - name: checkout bat
-#      git:
-#        repo: 'https://github.com/sharkdp/bat.git'
-#        dest: "{{ repos_dir }}/bat"
-#        depth: 1
