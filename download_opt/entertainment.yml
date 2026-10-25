@@ -1,0 +1,35 @@
+---
+- hosts: local
+  tasks:
+    - name: Ensure opt dirs exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ user_opt_dir }}/yt-dlp"
+        - "{{ user_opt_dir }}/yt-x"
+
+    # ---- yt-dlp ----
+    - name: Download latest yt-dlp to temp
+      ansible.builtin.get_url:
+        url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
+        dest: "{{ user_opt_dir }}/yt-dlp/yt-dlp.new"
+        mode: "0755"
+        force: true
+
+    - name: Install yt-dlp atomically
+      ansible.builtin.command:
+        cmd: mv -f {{ user_opt_dir }}/yt-dlp/yt-dlp.new {{ user_opt_dir }}/yt-dlp/yt-dlp
+
+    # ---- yt-x ----
+    - name: Download latest yt-x to temp
+      ansible.builtin.get_url:
+        url: https://github.com/Benexl/yt-x/releases/latest/download/yt-x
+        dest: "{{ user_opt_dir }}/yt-x/yt-x.new"
+        mode: "0755"
+        force: true
+
+    - name: Install yt-x atomically
+      ansible.builtin.command:
+        cmd: mv -f {{ user_opt_dir }}/yt-x/yt-x.new {{ user_opt_dir }}/yt-x/yt-x

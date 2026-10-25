@@ -11,6 +11,7 @@ target_github_key: "{{ target_home }}/.ssh/id_ed25519"
 
 # Where git repos (dotfiles, vim-plug, ...) are cloned and symlinked from
 repos_dir: "{{ target_home }}/repos"
+user_opt_dir: "{{ target_home }}/opt"
 
 # Docker storage. With the containerd image store, images live under
 # containerd's root, not docker's data-root, so both are placed here:

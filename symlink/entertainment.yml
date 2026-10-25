@@ -1,0 +1,23 @@
+---
+- hosts: local
+  tasks:
+
+    - name: Ensure opt dirs exist
+      ansible.builtin.file:
+        path: "{{ target_home }}/.local/bin"
+        state: directory
+        mode: "0755"
+
+    - name: Symlink yt-dlp
+      ansible.builtin.file:
+        src: "{{ user_opt_dir }}/yt-dlp/yt-dlp"
+        dest: "{{ target_home }}/.local/bin/yt-dlp"
+        state: link
+        force: true
+
+    - name: Symlink yt-x
+      ansible.builtin.file:
+        src: "{{ user_opt_dir }}/yt-x/yt-x"
+        dest: "{{ target_home }}/.local/bin/yt-x"
+        state: link
+        force: true
