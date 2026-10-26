@@ -18,13 +18,13 @@
       ansible.builtin.user:
         name: "{{ target_user }}"
         groups: pulse
-        append: yes
+        append: true
 
     - name: Add user to pulse-access group
       ansible.builtin.user:
         name: "{{ target_user }}"
         groups: pulse-access
-        append: yes
+        append: true
 
     - name: disable terminal bell sound
       lineinfile:

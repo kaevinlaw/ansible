@@ -21,7 +21,7 @@
       ansible.builtin.user:
         name: "{{ target_user }}"
         groups: docker
-        append: yes
+        append: true
 
     # service_mgr reports "systemd" whenever it's installed (e.g. containers);
     # /run/systemd/system only exists when systemd is actually running

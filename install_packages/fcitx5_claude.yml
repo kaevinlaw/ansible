@@ -25,5 +25,5 @@
             # fcitx5-table-extra       pulls quick5 etc, quick5 lists rare Ext B chars first
             # fcitx5-chinese-addons    only for pinyin / trad-simp conversion
             # fonts-noto-cjk-extra, fonts-wqy-*
-        update_cache: yes
-        install_recommends: no
+        update_cache: true
+        install_recommends: false

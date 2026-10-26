@@ -25,7 +25,7 @@
         name:
           - ca-certificates
           - curl
-        update_cache: yes
+        update_cache: true
 
     # apt-key is gone; keys now live in /etc/apt/keyrings and are referenced
     # per-source with Signed-By
@@ -62,4 +62,4 @@
           - containerd.io
           - docker-buildx-plugin
           - docker-compose-plugin   # `docker compose` (v2); replaces docker-compose v1
-        update_cache: yes
+        update_cache: true

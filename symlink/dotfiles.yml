@@ -18,7 +18,7 @@
         src: "{{ repos_dir }}/dotfiles/nvim/init.lua"
         dest: "{{ target_home }}/.config/nvim/init.lua"
         state: link
-        force: yes
+        force: true
         owner: "{{ target_user }}"
         group: "{{ target_group }}"
 
@@ -29,7 +29,7 @@
         src: "{{ repos_dir }}/dotfiles/nvim/lua"
         dest: "{{ target_home }}/.config/nvim/lua"
         state: link
-        force: yes
+        force: true
         owner: "{{ target_user }}"
         group: "{{ target_group }}"
 

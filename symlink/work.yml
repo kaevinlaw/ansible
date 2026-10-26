@@ -50,7 +50,7 @@
         src: "{{ repos_dir }}/vibe/fwtools/{{ item }}"
         dest: "{{ target_home }}/.local/bin/{{ item }}"
         state: link
-        force: yes
+        force: true
         owner: "{{ target_user }}"
         group: "{{ target_group }}"
       loop: "{{ work_scripts }}"

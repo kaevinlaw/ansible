@@ -1,6 +1,6 @@
 ---
 - hosts: local
-  become: no
+  become: false
   tasks:
     - name: Ensure Node.js and npm are installed
       become: true
@@ -9,7 +9,7 @@
           - nodejs
           - npm
         state: present
-        update_cache: yes
+        update_cache: true
         cache_valid_time: 3600
 
     - name: Install tree-sitter CLI globally via npm

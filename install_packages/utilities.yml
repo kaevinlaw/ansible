@@ -83,5 +83,5 @@
           - gnome-keyring
           - libpam-gnome-keyring
 
-        update_cache: yes
-        install_recommends: no
+        update_cache: true
+        install_recommends: false

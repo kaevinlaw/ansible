@@ -12,5 +12,5 @@
           - build-essential
           - "linux-headers-{{ ansible_kernel }}"
           - virtualbox-guest-additions-iso
-        update_cache: yes
-        install_recommends: no
+        update_cache: true
+        install_recommends: false

@@ -1,14 +1,14 @@
 ---
 - hosts: local
-  gather_facts: yes
+  gather_facts: true
   tasks:
     - name: Install Fcitx5 and Chinese Quick packages for Ubuntu Desktop
       become: true
       become_user: root
       ansible.builtin.apt:
         state: present
-        update_cache: yes
-        install_recommends: no
+        update_cache: true
+        install_recommends: false
         name:
           - im-config
           - fcitx5
