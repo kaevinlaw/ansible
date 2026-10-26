@@ -27,7 +27,7 @@
         append: true
 
     - name: disable terminal bell sound
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/inputrc
         regexp: '^#\s*set bell-style none'
         line: 'set bell-style none'

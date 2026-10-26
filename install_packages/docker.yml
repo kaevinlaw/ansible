@@ -8,7 +8,7 @@
     # Ubuntu's own docker packages conflict with Docker's (containerd.io ships
     # its own containerd + runc)
     - name: remove conflicting distro packages
-      apt:
+      ansible.builtin.apt:
         state: absent
         name:
           - docker.io
@@ -20,7 +20,7 @@
           - runc
 
     - name: install required packages
-      apt:
+      ansible.builtin.apt:
         state: present
         name:
           - ca-certificates
@@ -54,7 +54,7 @@
           Signed-By: /etc/apt/keyrings/docker.asc
 
     - name: install docker packages
-      apt:
+      ansible.builtin.apt:
         state: present
         name:
           - docker-ce

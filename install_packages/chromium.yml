@@ -6,7 +6,7 @@
   become_user: root
   tasks:
     - name: add xtradeb apps PPA
-      command: add-apt-repository -y ppa:xtradeb/apps
+      ansible.builtin.command: add-apt-repository -y ppa:xtradeb/apps
       args:
         creates: /etc/apt/sources.list.d/xtradeb-ubuntu-apps-{{ ansible_facts['distribution_release'] }}.sources
 
@@ -26,7 +26,7 @@
           Pin-Priority: 100
 
     - name: install chromium
-      apt:
+      ansible.builtin.apt:
         name: chromium
         state: present
         update_cache: true

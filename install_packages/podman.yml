@@ -4,7 +4,7 @@
     - name: install podman
       become: true
       become_user: root
-      apt:
+      ansible.builtin.apt:
         state: present
         name:
           - uidmap
