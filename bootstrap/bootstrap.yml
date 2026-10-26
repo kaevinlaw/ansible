@@ -11,7 +11,7 @@
         state: present
         update_cache: yes
 
-- import_playbook: ../install_packages/utilities.yml
+- import_playbook: ../install_packages/utilities_t450.yml
 - import_playbook: ../git_clone/git_clone.yml
 - import_playbook: ../symlink/dotfiles.yml
 - import_playbook: ../configure/nvim.yml
