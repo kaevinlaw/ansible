@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Install fcitx5 for Ubuntu 24.04 GNOME
+  hosts: local
   gather_facts: true
   tasks:
     - name: Install Fcitx5 and Chinese Quick packages for Ubuntu Desktop

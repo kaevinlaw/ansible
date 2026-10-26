@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Symlink dotfiles
+  hosts: local
   tasks:
 
     - name: Creates nvim and autoload folder

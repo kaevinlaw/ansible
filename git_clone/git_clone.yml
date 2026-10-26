@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Clone dotfiles
+  hosts: local
   tasks:
     - name: Checkout dotfiles
       ansible.builtin.git:

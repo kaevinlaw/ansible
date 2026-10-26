@@ -2,7 +2,8 @@
 # fcitx5 as input method + Quick Classic (速成) in the input method list,
 # tray icon as text (速) and Noto Sans CJK TC for candidates/menu/tray.
 # Packages: install_packages/fcitx5_claude.yml. Log out/in afterwards.
-- hosts: local
+- name: Configure fcitx5
+  hosts: local
   become: true
   become_user: "{{ target_user }}"
   vars:

@@ -2,7 +2,8 @@
 # ungoogled-chromium (chromium without Google services/telemetry) as a .deb
 # from the xtradeb PPA. Ubuntu doesn't package it. It installs alongside
 # install_packages/chromium.yml (same PPA) without conflicts.
-- hosts: local
+- name: Install ungoogled-chromium
+  hosts: local
   become: true
   become_user: root
   tasks:

@@ -1,7 +1,8 @@
 ---
 # Docker Engine from Docker's apt repo, following
 # https://docs.docker.com/engine/install/ubuntu/
-- hosts: local
+- name: Install docker
+  hosts: local
   become: true
   become_user: root
   tasks:

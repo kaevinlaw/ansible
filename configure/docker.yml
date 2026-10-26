@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Configure docker
+  hosts: local
   become: true
   become_user: root
   vars:

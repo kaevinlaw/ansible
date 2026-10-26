@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Download entertainment tools
+  hosts: local
   tasks:
     - name: Ensure opt dirs exist
       ansible.builtin.file:

@@ -1,7 +1,8 @@
 ---
 # fcitx5 + Quick Classic (速成) for Ubuntu 26.04 GNOME (Wayland)
 # Packages only. Config files and settings: see ~/vimviki/linux/fcitx5_quick.md
-- hosts: local
+- name: Install fcitx5 and quick classic
+  hosts: local
   tasks:
     - name: Install fcitx5 and quick classic
       become: true

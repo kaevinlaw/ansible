@@ -1,7 +1,8 @@
 ---
 # Chromium as a real .deb from the xtradeb PPA. Ubuntu itself only ships
 # chromium-browser, a wrapper that installs the snap.
-- hosts: local
+- name: Install chromium
+  hosts: local
   become: true
   become_user: root
   tasks:

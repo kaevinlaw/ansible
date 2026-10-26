@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Clone personal repos
+  hosts: local
   tasks:
     - name: Clone vimviki
       ansible.builtin.git:

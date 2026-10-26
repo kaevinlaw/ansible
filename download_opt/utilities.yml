@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Download utilities
+  hosts: local
   vars:
     fzf_arch: linux_amd64
     rg_arch: x86_64-unknown-linux-musl

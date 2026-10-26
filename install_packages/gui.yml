@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Install GUI packages
+  hosts: local
   tasks:
     - name: Install packages
       become: true

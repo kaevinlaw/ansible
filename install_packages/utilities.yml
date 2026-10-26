@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Install utilities
+  hosts: local
   tasks:
     - name: Add neovim-ppa unstable
       become: true

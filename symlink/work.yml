@@ -4,7 +4,8 @@
 #
 # vibe is a private repo; this play is a no-op on a host that cannot clone it.
 # Requires git_clone/personal.yml to have cloned vibe first.
-- hosts: local
+- name: Symlink work scripts
+  hosts: local
   vars:
     work_scripts:
       - fw-snapshot

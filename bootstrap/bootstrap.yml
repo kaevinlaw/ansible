@@ -1,5 +1,6 @@
 ---
-- hosts: local
+- name: Prepare apt for PPAs
+  hosts: local
   gather_facts: false
   tasks:
     # provides add-apt-repository, used to add PPAs (apt-key is gone in modern ubuntu)
@@ -11,10 +12,17 @@
         state: present
         update_cache: true
 
-- import_playbook: ../install_packages/utilities.yml
-- import_playbook: ../git_clone/git_clone.yml
-- import_playbook: ../symlink/dotfiles.yml
-- import_playbook: ../configure/nvim.yml
-- import_playbook: ../git_clone/personal.yml
-- import_playbook: ../symlink/personal.yml
-- import_playbook: ../symlink/work.yml
+- name: Install utilities
+  import_playbook: ../install_packages/utilities.yml
+- name: Clone dotfiles
+  import_playbook: ../git_clone/git_clone.yml
+- name: Symlink dotfiles
+  import_playbook: ../symlink/dotfiles.yml
+- name: Configure nvim
+  import_playbook: ../configure/nvim.yml
+- name: Clone personal repos
+  import_playbook: ../git_clone/personal.yml
+- name: Symlink personal repos
+  import_playbook: ../symlink/personal.yml
+- name: Symlink work scripts
+  import_playbook: ../symlink/work.yml
