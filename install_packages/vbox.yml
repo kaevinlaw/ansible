@@ -7,7 +7,7 @@
       ansible.builtin.apt:
         state: present
         name:
-            #misc admin
+            # misc admin
           - dkms
           - build-essential
           - "linux-headers-{{ ansible_kernel }}"

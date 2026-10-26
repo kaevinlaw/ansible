@@ -19,7 +19,7 @@
           - picom
           - conky
           - qutebrowser
-          #- lightdm
-          #- xubuntu-core
+          # - lightdm
+          # - xubuntu-core
         update_cache: true
         install_recommends: false
