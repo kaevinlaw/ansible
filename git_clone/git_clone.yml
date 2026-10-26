@@ -5,6 +5,6 @@
       ansible.builtin.git:
         repo: 'git@github.com:kaevinlaw/dotfiles.git'
         dest: "{{ repos_dir }}/dotfiles"
-        version: lua
+        version: lsp
         key_file: "{{ target_github_key }}"
         accept_hostkey: true
