@@ -22,3 +22,8 @@
     - name: Install/update nvim plugins with lazy
       ansible.builtin.command: nvim --headless "+Lazy! sync" +qa
       changed_when: false
+
+    # language servers listed in dotfiles nvim/lua/config/lsp.lua (mason_servers)
+    - name: Install LSP servers with mason
+      ansible.builtin.command: nvim --headless "+MasonToolsInstallSync" +qa
+      changed_when: false

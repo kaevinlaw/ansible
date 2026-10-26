@@ -11,7 +11,7 @@
         owner: "{{ target_user }}"
         group: "{{ target_group }}"
 
-    - name: Symlink init.lua
+    - name: Symlink nvim init.lua
       become: true
       become_user: root
       ansible.builtin.file:
