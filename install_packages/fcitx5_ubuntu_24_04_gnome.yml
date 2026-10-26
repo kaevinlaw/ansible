@@ -39,4 +39,3 @@
       ansible.builtin.command: im-config -n fcitx5
       register: im_config_out
       changed_when: "'fcitx5' not in im_config_out.stdout"
-

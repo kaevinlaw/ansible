@@ -31,5 +31,3 @@
         dest: /etc/inputrc
         regexp: '^#\s*set bell-style none'
         line: 'set bell-style none'
-
-
