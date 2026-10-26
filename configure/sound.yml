@@ -26,7 +26,7 @@
         groups: pulse-access
         append: true
 
-    - name: disable terminal bell sound
+    - name: Disable terminal bell sound
       ansible.builtin.lineinfile:
         dest: /etc/inputrc
         regexp: '^#\s*set bell-style none'

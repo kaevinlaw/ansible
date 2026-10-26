@@ -52,7 +52,7 @@
         validate: dockerd --validate --config-file %s
       vars:
         docker_daemon_current: "{{ (docker_daemon_json.content | b64decode | from_json) if docker_daemon_json.content is defined else {} }}"
-      notify: restart docker
+      notify: Restart docker
 
     # images/snapshots (containerd image store) follow containerd's root
     - name: Create docker storage directories
@@ -78,7 +78,7 @@
         insertbefore: BOF
         firstmatch: true
       when: docker_custom_storage | bool
-      notify: restart containerd
+      notify: Restart containerd
 
     # only an active (uncommented) root line; containerd then uses its default
     - name: Reset containerd root to default
@@ -87,7 +87,7 @@
         regexp: '^\s*root\s*='
         state: absent
       when: not docker_custom_storage | bool
-      notify: restart containerd
+      notify: Restart containerd
 
     - name: Enable and start docker
       ansible.builtin.systemd_service:
@@ -119,7 +119,7 @@
 
   handlers:
     # listed before "restart docker" so containerd is back up first
-    - name: restart containerd
+    - name: Restart containerd
       ansible.builtin.systemd_service:
         name: containerd
         state: restarted
@@ -129,7 +129,7 @@
     # set). After switching stores, images/containers from overlay2 are hidden
     # (still in /var/lib/docker) until pulled/created again. Same when
     # docker_storage_dir changes: old data stays at the old path.
-    - name: restart docker
+    - name: Restart docker
       ansible.builtin.systemd_service:
         name: docker
         state: restarted

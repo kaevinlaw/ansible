@@ -3,7 +3,7 @@
   gather_facts: false
   tasks:
     # provides add-apt-repository, used to add PPAs (apt-key is gone in modern ubuntu)
-    - name: install software-properties-common
+    - name: Install software-properties-common
       become: true
       become_user: root
       ansible.builtin.apt:

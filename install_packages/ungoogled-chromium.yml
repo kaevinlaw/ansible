@@ -6,7 +6,7 @@
   become: true
   become_user: root
   tasks:
-    - name: add xtradeb apps PPA
+    - name: Add xtradeb apps PPA
       ansible.builtin.command: add-apt-repository -y ppa:xtradeb/apps
       args:
         creates: /etc/apt/sources.list.d/xtradeb-ubuntu-apps-{{ ansible_facts['distribution_release'] }}.sources
@@ -15,7 +15,7 @@
     # packages and only take ungoogled-chromium (and its -common, -sandbox, ...).
     # Package-specific pins win over "Package: *", so this coexists with the
     # pin file from chromium.yml.
-    - name: pin ungoogled-chromium to the xtradeb PPA
+    - name: Pin ungoogled-chromium to the xtradeb PPA
       ansible.builtin.copy:
         dest: /etc/apt/preferences.d/ungoogled-chromium-ppa
         mode: "0644"
@@ -28,7 +28,7 @@
           Pin: release o=LP-PPA-xtradeb-apps
           Pin-Priority: 100
 
-    - name: install ungoogled-chromium
+    - name: Install ungoogled-chromium
       ansible.builtin.apt:
         name: ungoogled-chromium
         state: present

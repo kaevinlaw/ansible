@@ -48,26 +48,26 @@
           PreferTextIcon=True
   tasks:
 
-    - name: check fcitx5 is the input method
+    - name: Check fcitx5 is the input method
       ansible.builtin.command: grep -qx 'run_im fcitx5' {{ target_home }}/.xinputrc
       register: xinputrc
       changed_when: false
       failed_when: false
 
-    - name: set fcitx5 as input method (writes ~/.xinputrc)
+    - name: Set fcitx5 as input method (writes ~/.xinputrc)
       ansible.builtin.command: im-config -n fcitx5
       when: xinputrc.rc != 0
 
     # kitty on X11 only talks IBus to input methods (fcitx5 has an IBus frontend);
     # on Wayland it uses text-input and ignores this. Only X sessions read .xsessionrc
-    - name: kitty on X11 - use fcitx5 through its IBus frontend
+    - name: Kitty on X11 - use fcitx5 through its IBus frontend
       ansible.builtin.lineinfile:
         path: "{{ target_home }}/.xsessionrc"
         line: export GLFW_IM_MODULE=ibus
         create: true
         mode: '0644'
 
-    - name: create fcitx5 config dirs
+    - name: Create fcitx5 config dirs
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -75,7 +75,7 @@
         - "{{ fcitx5_dir }}"
         - "{{ fcitx5_dir }}/conf"
 
-    - name: check fcitx5 config files
+    - name: Check fcitx5 config files
       ansible.builtin.copy:
         dest: "{{ item.dest }}"
         content: "{{ item.content }}"
@@ -86,14 +86,14 @@
       register: fcitx5_check
 
     # a running fcitx5 saves its own config on exit and would undo the change
-    - name: stop fcitx5 before changing its config
+    - name: Stop fcitx5 before changing its config
       ansible.builtin.command: pkill -u {{ target_user }} -x fcitx5
       register: fcitx5_stop
       when: fcitx5_check.changed
       changed_when: fcitx5_stop.rc == 0
       failed_when: fcitx5_stop.rc > 1
 
-    - name: fcitx5 config - input methods, tray text icon, fonts
+    - name: Fcitx5 config - input methods, tray text icon, fonts
       ansible.builtin.copy:
         dest: "{{ item.dest }}"
         content: "{{ item.content }}"
@@ -101,7 +101,7 @@
       loop_control:
         label: "{{ item.dest }}"
 
-    - name: restart note
+    - name: Restart note
       ansible.builtin.debug:
         msg: "fcitx5 was stopped: start it again with 'fcitx5 -d' or log out/in"
       when: fcitx5_stop is changed

@@ -1,7 +1,7 @@
 ---
 - hosts: local
   tasks:
-    - name: clone vimviki
+    - name: Clone vimviki
       ansible.builtin.git:
         repo: 'git@github.com:kaevinlaw/vimviki.git'
         dest: "{{ repos_dir }}/vimviki"
@@ -9,7 +9,7 @@
         key_file: "{{ target_github_key }}"
         accept_hostkey: true
 
-    - name: clone fin (plutus)
+    - name: Clone fin (plutus)
       ansible.builtin.git:
         repo: 'git@github.com:kaevinlaw/fin.git'
         dest: "{{ repos_dir }}/fin"
@@ -17,7 +17,7 @@
         key_file: "{{ target_github_key }}"
         accept_hostkey: true
 
-    - name: clone health_track
+    - name: Clone health_track
       ansible.builtin.git:
         repo: 'git@github.com:kaevinlaw/health_track.git'
         dest: "{{ repos_dir }}/health_track"
@@ -25,7 +25,7 @@
         key_file: "{{ target_github_key }}"
         accept_hostkey: true
 
-    - name: clone fenix7_batt
+    - name: Clone fenix7_batt
       ansible.builtin.git:
         repo: 'git@github.com:kaevinlaw/fenix7_batt.git'
         dest: "{{ repos_dir }}/fenix7_batt"
@@ -33,7 +33,7 @@
         key_file: "{{ target_github_key }}"
         accept_hostkey: true
 
-    - name: clone vibe
+    - name: Clone vibe
       ansible.builtin.git:
         repo: 'git@github.com:kaevinlaw/vibe.git'
         dest: "{{ repos_dir }}/vibe"
@@ -41,7 +41,7 @@
         key_file: "{{ target_github_key }}"
         accept_hostkey: true
 
-    - name: clone dockers
+    - name: Clone dockers
       ansible.builtin.git:
         repo: 'git@github.com:kaevinlaw/dockers.git'
         dest: "{{ repos_dir }}/dockers"

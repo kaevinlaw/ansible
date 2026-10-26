@@ -5,14 +5,14 @@
   become: true
   become_user: root
   tasks:
-    - name: add xtradeb apps PPA
+    - name: Add xtradeb apps PPA
       ansible.builtin.command: add-apt-repository -y ppa:xtradeb/apps
       args:
         creates: /etc/apt/sources.list.d/xtradeb-ubuntu-apps-{{ ansible_facts['distribution_release'] }}.sources
 
     # The PPA carries many other apps; keep them from replacing Ubuntu's
     # packages and only take chromium (chromium, chromium-common, -driver, ...).
-    - name: pin chromium to the xtradeb PPA
+    - name: Pin chromium to the xtradeb PPA
       ansible.builtin.copy:
         dest: /etc/apt/preferences.d/chromium-ppa
         mode: "0644"
@@ -25,7 +25,7 @@
           Pin: release o=LP-PPA-xtradeb-apps
           Pin-Priority: 100
 
-    - name: install chromium
+    - name: Install chromium
       ansible.builtin.apt:
         name: chromium
         state: present

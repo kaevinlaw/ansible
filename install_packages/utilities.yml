@@ -1,13 +1,13 @@
 ---
 - hosts: local
   tasks:
-    - name: add neovim-ppa unstable
+    - name: Add neovim-ppa unstable
       become: true
       become_user: root
       ansible.builtin.command: add-apt-repository -y ppa:neovim-ppa/unstable
       args:
         creates: /etc/apt/sources.list.d/neovim-ppa-ubuntu-unstable-{{ ansible_facts['distribution_release'] }}.sources
-    - name: install packages
+    - name: Install packages
       become: true
       become_user: root
       ansible.builtin.apt:

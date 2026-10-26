@@ -3,7 +3,7 @@
 # Packages only. Config files and settings: see ~/vimviki/linux/fcitx5_quick.md
 - hosts: local
   tasks:
-    - name: install fcitx5 and quick classic
+    - name: Install fcitx5 and quick classic
       become: true
       become_user: root
       ansible.builtin.apt:
