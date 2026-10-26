@@ -9,11 +9,14 @@
     containerd_root: "{{ docker_storage_dir ~ '/containerd' if docker_custom_storage | bool else '/var/lib/containerd' }}"
   tasks:
 
+    # docker-ce creates this group itself; kept so this playbook also works
+    # before docker is installed
     - name: Create docker user group
       ansible.builtin.group:
         name: docker
         state: present
 
+    # takes effect at the user's next login
     - name: Add user to docker group
       ansible.builtin.user:
         name: "{{ target_user }}"
@@ -27,6 +30,9 @@
         path: /run/systemd/system
       register: systemd_running
 
+    # Use the containerd image store (snapshotters) instead of the classic
+    # overlay2 graph driver. Default on fresh Docker Engine 29+ installs; this
+    # makes it explicit and switches hosts upgraded from older versions.
     # Merged into any existing daemon.json so other settings are kept.
     - name: Read existing docker daemon.json
       ansible.builtin.slurp:
@@ -34,13 +40,14 @@
       register: docker_daemon_json
       failed_when: false
 
-    - name: Configure daemon.json (data-root)
+    - name: Configure daemon.json (containerd image store, data-root)
       ansible.builtin.copy:
         dest: /etc/docker/daemon.json
         mode: "0644"
         content: "{{ (docker_daemon_current | combine({'data-root': docker_data_root})
                       if docker_custom_storage | bool
                       else docker_daemon_current | dict2items | rejectattr('key', 'equalto', 'data-root') | items2dict)
+                     | combine({'features': {'containerd-snapshotter': true}}, recursive=true)
                      | to_nice_json }}\n"
         validate: dockerd --validate --config-file %s
       vars:
@@ -92,6 +99,13 @@
     - name: Apply daemon.json now
       ansible.builtin.meta: flush_handlers
 
+    - name: Check docker uses the containerd image store
+      ansible.builtin.command: docker info --format "{{ '{{' }}json .DriverStatus{{ '}}' }}"
+      register: docker_driver_status
+      changed_when: false
+      failed_when: "'io.containerd.snapshotter' not in docker_driver_status.stdout"
+      when: systemd_running.stat.exists
+
     - name: Check docker and containerd storage paths
       ansible.builtin.shell: |
         docker info --format '{{ '{{' }}.DockerRootDir{{ '}}' }}'
@@ -112,8 +126,9 @@
       when: systemd_running.stat.exists
 
     # Restarting the daemon stops running containers (unless live-restore is
-    # set). When docker_storage_dir changes, old data stays at the old path
-    # (hidden) until pulled/created again.
+    # set). After switching stores, images/containers from overlay2 are hidden
+    # (still in /var/lib/docker) until pulled/created again. Same when
+    # docker_storage_dir changes: old data stays at the old path.
     - name: restart docker
       ansible.builtin.systemd_service:
         name: docker
