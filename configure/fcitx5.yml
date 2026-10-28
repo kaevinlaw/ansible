@@ -93,9 +93,11 @@
     - name: Stop fcitx5 before changing its config
       ansible.builtin.command: pkill -u {{ target_user }} -x fcitx5
       register: fcitx5_stop
-      when: fcitx5_check.changed
+      # must run before the copy below; a handler would only run after it
+      when: fcitx5_check.changed  # noqa: no-handler
       changed_when: fcitx5_stop.rc == 0
       failed_when: fcitx5_stop.rc > 1
+      notify: Restart note
 
     - name: Fcitx5 config - input methods, tray text icon, fonts
       ansible.builtin.copy:
@@ -106,7 +108,7 @@
       loop_control:
         label: "{{ item.dest }}"
 
+  handlers:
     - name: Restart note
       ansible.builtin.debug:
         msg: "fcitx5 was stopped: start it again with 'fcitx5 -d' or log out/in"
-      when: fcitx5_stop is changed
