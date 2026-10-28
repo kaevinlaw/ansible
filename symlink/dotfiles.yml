@@ -9,6 +9,7 @@
       ansible.builtin.file:
         path: "{{ target_home }}/.config/nvim/autoload"
         state: directory
+        mode: "0755"
 
     - name: Symlink nvim init.lua
       ansible.builtin.file:
@@ -65,6 +66,7 @@
       ansible.builtin.file:
         path: "{{ target_home }}/.config/i3"
         state: directory
+        mode: "0755"
 
     - name: Symlink i3config
       ansible.builtin.file:
@@ -76,6 +78,7 @@
       ansible.builtin.file:
         path: "{{ target_home }}/.config/kitty"
         state: directory
+        mode: "0755"
 
     - name: Symlink kitty
       ansible.builtin.file:
@@ -87,6 +90,7 @@
       ansible.builtin.file:
         path: "{{ target_home }}/.config/picom"
         state: directory
+        mode: "0755"
 
     - name: Symlink picom
       ansible.builtin.file:
@@ -98,6 +102,7 @@
       ansible.builtin.file:
         path: "{{ target_home }}/.config/ytfzf"
         state: directory
+        mode: "0755"
 
     - name: Symlink ytfzf
       ansible.builtin.file:
