@@ -6,6 +6,8 @@
 # Requires git_clone/personal.yml to have cloned vibe first.
 - name: Symlink work scripts
   hosts: local
+  become: true
+  become_user: "{{ target_user }}"
   vars:
     work_scripts:
       - fw-snapshot
@@ -26,13 +28,9 @@
       when: not work_scripts_dir.stat.exists
 
     - name: Create ~/.local/bin
-      become: true
-      become_user: root
       ansible.builtin.file:
         path: "{{ target_home }}/.local/bin"
         state: directory
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
         mode: "0755"
       when: work_scripts_dir.stat.exists
 
@@ -45,14 +43,10 @@
       when: work_scripts_dir.stat.exists
 
     - name: Symlink work scripts into ~/.local/bin
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/vibe/fwtools/{{ item }}"
         dest: "{{ target_home }}/.local/bin/{{ item }}"
         state: link
         force: true
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
       loop: "{{ work_scripts }}"
       when: work_scripts_dir.stat.exists

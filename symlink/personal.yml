@@ -1,24 +1,18 @@
 ---
 - name: Symlink personal repos
   hosts: local
+  become: true
+  become_user: "{{ target_user }}"
   tasks:
 
     - name: Symlink vimviki
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/vimviki"
         dest: "{{ target_home }}/vimviki"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink plutus
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/fin"
         dest: "{{ target_home }}/plutus"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"

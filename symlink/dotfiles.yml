@@ -1,175 +1,109 @@
 ---
 - name: Symlink dotfiles
   hosts: local
+  become: true
+  become_user: "{{ target_user }}"
   tasks:
 
     - name: Creates nvim and autoload folder
-      become: true
-      become_user: root
       ansible.builtin.file:
         path: "{{ target_home }}/.config/nvim/autoload"
         state: directory
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink nvim init.lua
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/nvim/init.lua"
         dest: "{{ target_home }}/.config/nvim/init.lua"
         state: link
         force: true
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink init.lua
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/nvim/lua"
         dest: "{{ target_home }}/.config/nvim/lua"
         state: link
         force: true
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink nvim plugin
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/nvim/plugin/"
         dest: "{{ target_home }}/.config/nvim/plugin_config"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
 
     - name: Symlink tmux
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/tmux/"
         dest: "{{ target_home }}/.config/tmux"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink tmux conf
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ target_home }}/.config/tmux/tmux.conf"
         dest: "{{ target_home }}/.tmux.conf"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink tig
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/tig/"
         dest: "{{ target_home }}/.config/tig"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink tigrc
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ target_home }}/.config/tig/tigrc"
         dest: "{{ target_home }}/.tigrc"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink gitconfig
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/git/gitconfig"
         dest: "{{ target_home }}/.gitconfig"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Creates i3 config
-      become: true
-      become_user: root
       ansible.builtin.file:
         path: "{{ target_home }}/.config/i3"
         state: directory
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink i3config
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/i3/i3config"
         dest: "{{ target_home }}/.config/i3/config"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Creates kitty config
-      become: true
-      become_user: root
       ansible.builtin.file:
         path: "{{ target_home }}/.config/kitty"
         state: directory
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink kitty
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/kitty/kitty.conf"
         dest: "{{ target_home }}/.config/kitty/kitty.conf"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Creates picom config
-      become: true
-      become_user: root
       ansible.builtin.file:
         path: "{{ target_home }}/.config/picom"
         state: directory
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink picom
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/picom/picom.conf"
         dest: "{{ target_home }}/.config/picom/picom.conf"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Creates ytfzf config
-      become: true
-      become_user: root
       ansible.builtin.file:
         path: "{{ target_home }}/.config/ytfzf"
         state: directory
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
     - name: Symlink ytfzf
-      become: true
-      become_user: root
       ansible.builtin.file:
         src: "{{ repos_dir }}/dotfiles/ytfzf/conf.sh"
         dest: "{{ target_home }}/.config/ytfzf/conf.sh"
         state: link
-        owner: "{{ target_user }}"
-        group: "{{ target_group }}"
 
 #    - name: Copy user.gitconfig
 #      become: true
