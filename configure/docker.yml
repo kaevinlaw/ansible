@@ -109,8 +109,11 @@
 
     - name: Check docker and containerd storage paths
       ansible.builtin.shell: |
+        set -o pipefail
         docker info --format '{{ '{{' }}.DockerRootDir{{ '}}' }}'
         containerd config dump | sed -n "s/^root = '\(.*\)'/\1/p"
+      args:
+        executable: /bin/bash
       register: docker_storage_check
       changed_when: false
       failed_when: >-
