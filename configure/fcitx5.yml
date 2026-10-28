@@ -9,7 +9,7 @@
   vars:
     fcitx5_dir: "{{ target_home }}/.config/fcitx5"
     # content as fcitx5 writes it, so fcitx5 rewriting them on exit is not a change.
-    # no mode: fcitx5 keeps its own permissions when it saves
+    # mode 0600/0700 as fcitx5 itself saves them, so the two don't fight over it
     fcitx5_files:
       - dest: "{{ fcitx5_dir }}/profile"
         content: |+
@@ -73,6 +73,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
+        mode: "0700"
       loop:
         - "{{ fcitx5_dir }}"
         - "{{ fcitx5_dir }}/conf"
@@ -81,6 +82,7 @@
       ansible.builtin.copy:
         dest: "{{ item.dest }}"
         content: "{{ item.content }}"
+        mode: "0600"
       loop: "{{ fcitx5_files }}"
       loop_control:
         label: "{{ item.dest }}"
@@ -99,6 +101,7 @@
       ansible.builtin.copy:
         dest: "{{ item.dest }}"
         content: "{{ item.content }}"
+        mode: "0600"
       loop: "{{ fcitx5_files }}"
       loop_control:
         label: "{{ item.dest }}"
