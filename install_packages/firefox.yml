@@ -38,7 +38,7 @@
     - name: Install firefox
       ansible.builtin.apt:
         name: firefox
-        state: latest   # replaces Ubuntu's snap wrapper if it's installed
+        state: latest   # noqa: package-latest - replaces Ubuntu's snap wrapper if it's installed
         update_cache: true
 
     # after the deb is in place, so there's always a browser
