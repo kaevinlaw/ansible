@@ -19,3 +19,4 @@
       ansible.builtin.shell: |
         udevadm trigger --subsystem-match=input --action=change
         setupcon --force || true
+      changed_when: true

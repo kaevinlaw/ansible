@@ -12,25 +12,21 @@
         - "{{ user_opt_dir }}/yt-x"
 
     # ---- yt-dlp ----
-    - name: Download latest yt-dlp to temp
+    # get_url downloads to a temp file and only replaces yt-dlp (atomically)
+    # when the checksum differs, so this is changed only on a new release
+    - name: Download latest yt-dlp
       ansible.builtin.get_url:
         url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
-        dest: "{{ user_opt_dir }}/yt-dlp/yt-dlp.new"
+        dest: "{{ user_opt_dir }}/yt-dlp/yt-dlp"
         mode: "0755"
         force: true
-
-    - name: Install yt-dlp atomically
-      ansible.builtin.command:
-        cmd: mv -f {{ user_opt_dir }}/yt-dlp/yt-dlp.new {{ user_opt_dir }}/yt-dlp/yt-dlp
 
     # ---- yt-x ----
-    - name: Download latest yt-x to temp
+    # get_url downloads to a temp file and only replaces yt-x (atomically)
+    # when the checksum differs, so this is changed only on a new release
+    - name: Download latest yt-x
       ansible.builtin.get_url:
         url: https://github.com/Benexl/yt-x/releases/latest/download/yt-x
-        dest: "{{ user_opt_dir }}/yt-x/yt-x.new"
+        dest: "{{ user_opt_dir }}/yt-x/yt-x"
         mode: "0755"
         force: true
-
-    - name: Install yt-x atomically
-      ansible.builtin.command:
-        cmd: mv -f {{ user_opt_dir }}/yt-x/yt-x.new {{ user_opt_dir }}/yt-x/yt-x

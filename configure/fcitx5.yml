@@ -57,6 +57,7 @@
 
     - name: Set fcitx5 as input method (writes ~/.xinputrc)
       ansible.builtin.command: im-config -n fcitx5
+      changed_when: true
       when: xinputrc.rc != 0
 
     # kitty on X11 only talks IBus to input methods (fcitx5 has an IBus frontend);
