@@ -12,6 +12,7 @@
     work_scripts:
       - fw-snapshot
       - compdb-host
+      - compdb-relocate
       - git-status-subgits
   tasks:
 
