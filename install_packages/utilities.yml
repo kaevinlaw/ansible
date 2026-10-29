@@ -74,6 +74,8 @@
           - tcpdump
           - bind9-dnsutils
           - openssh-server
+          - gddrescue
+          - testdisk
 
           - pandoc
           - poppler-utils
