@@ -73,19 +73,18 @@
           - lftp
           - tcpdump
           - bind9-dnsutils
+          - openssh-server
 
           - pandoc
           - poppler-utils
 
-          # ffmpeg
           - f2fs-tools
-
-          - exfatprogs
 
           # key
           - gcr4
           - gnome-keyring
           - libpam-gnome-keyring
 
+          - exfatprogs
         update_cache: true
         install_recommends: false
