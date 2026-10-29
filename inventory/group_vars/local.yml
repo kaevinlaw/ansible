@@ -1,0 +1,7 @@
+---
+# Ubuntu 25.10+ ships sudo-rs as sudo. It wraps ansible's password prompt
+# ("[sudo: <prompt>] Password:"), so ansible never sees it and become times
+# out. Use the classic sudo (sudo.ws) when it is installed, else plain sudo
+# (e.g. 24.04, where classic sudo is /usr/bin/sudo).
+# The lookup checks the controller, which is the target for the local group.
+ansible_become_exe: "{{ 'sudo.ws' if lookup('ansible.builtin.fileglob', '/usr/bin/sudo.ws') else 'sudo' }}"
