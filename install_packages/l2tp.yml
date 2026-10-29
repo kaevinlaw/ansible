@@ -1,0 +1,18 @@
+---
+# L2TP/IPsec VPN client for NetworkManager.
+# The connection itself (gateway, user, pre-shared key) is set up by hand in
+# nm-connection-editor and is not kept in this repo.
+- name: Install L2TP VPN client
+  hosts: local
+  tasks:
+    - name: Install NetworkManager L2TP plugin and its editor
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        state: present
+        name:
+          - network-manager-l2tp
+          - network-manager-l2tp-gnome   # L2TP dialog in nm-connection-editor
+          - network-manager-gnome        # nm-connection-editor, nm-applet
+        update_cache: true
+        install_recommends: false
