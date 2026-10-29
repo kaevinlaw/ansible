@@ -32,6 +32,9 @@
             # python3-distutils: removed in python 3.12 (ubuntu 24.04+)
 
             # dev related
+          - shellcheck       # used by bashls (mason) when on PATH
+          - ansible-lint     # used by ansiblels (mason) when on PATH
+          - bear             # generates compile_commands.json for clangd (bear -- make)
           - clangd
           - build-essential
           - git
@@ -51,6 +54,7 @@
           - texinfo
           - help2man
           - libncurses-dev
+          - jq
             # - libncurses5
 
             # android
