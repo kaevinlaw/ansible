@@ -76,6 +76,7 @@
           - openssh-server
           - gddrescue
           - testdisk
+          - qemu-utils
 
           - pandoc
           - poppler-utils
