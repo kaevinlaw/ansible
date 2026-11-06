@@ -1,0 +1,23 @@
+---
+# fcitx5 + Rime, for the Mixed Chinese Keyboard Plus schema (mixed_quick)
+# Packages only. Run after fcitx5_claude.yml (fcitx5, frontends, configtool,
+# im-config, fonts). The schema files are generated separately and copied to
+# ~/.local/share/fcitx5/rime/.
+- name: Install fcitx5-rime
+  hosts: local
+  tasks:
+    - name: Install fcitx5-rime and the lua plugin
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        state: present
+        name:
+          - fcitx5-rime          # Rime engine for fcitx5; pulls librime1t64, librime-data
+          - librime-plugin-lua   # lua_processor: associated phrases after a commit
+          - rime-prelude         # default.yaml, punctuation/key_bindings presets the schema imports
+
+            # not needed:
+            # librime-bin            rime_deployer etc; fcitx5-rime deploys by itself
+            # rime-data-quick5       stock Quick schema; mixed_quick replaces it
+        update_cache: true
+        install_recommends: false
