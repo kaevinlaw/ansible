@@ -80,6 +80,7 @@
 
           - pandoc
           - poppler-utils
+          - plantuml
 
           - f2fs-tools
 
