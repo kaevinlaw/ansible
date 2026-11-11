@@ -16,8 +16,6 @@
         name:
             # nvim
           - neovim
-          - ripgrep
-          - fzf
           - bat
 
             # nodejs

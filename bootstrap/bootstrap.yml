@@ -14,6 +14,11 @@
 
 - name: Install utilities
   import_playbook: ../install_packages/utilities.yml
+# fzf and ripgrep: latest release binaries in ~/opt, linked into ~/.local/bin
+- name: Download utilities
+  import_playbook: ../download_opt/utilities.yml
+- name: Symlink utilities
+  import_playbook: ../symlink/utilities.yml
 - name: Clone dotfiles
   import_playbook: ../git_clone/git_clone.yml
 - name: Symlink dotfiles
