@@ -1,0 +1,135 @@
+---
+# Shared by configure/fcitx5_quick.yml and configure/fcitx5_rime.yml: makes
+# fcitx5 the input method and adds fcitx5_im to the input method list, keeping
+# the input methods (and the default one) already there.
+# Needs: fcitx5_im, e.g. quick-classic or rime. Run as target_user.
+# Only group 0 ("Default") is handled; a profile with more groups is refused.
+
+- name: Check fcitx5 is the input method
+  ansible.builtin.command: grep -qx 'run_im fcitx5' {{ target_home }}/.xinputrc
+  register: xinputrc
+  changed_when: false
+  failed_when: false
+
+- name: Set fcitx5 as input method (writes ~/.xinputrc)
+  ansible.builtin.command: im-config -n fcitx5
+  changed_when: true
+  when: xinputrc.rc != 0
+
+# kitty on X11 only talks IBus to input methods (fcitx5 has an IBus frontend);
+# on Wayland it uses text-input and ignores this. Only X sessions read .xsessionrc
+- name: Kitty on X11 - use fcitx5 through its IBus frontend
+  ansible.builtin.lineinfile:
+    path: "{{ target_home }}/.xsessionrc"
+    line: export GLFW_IM_MODULE=ibus
+    create: true
+    mode: "0644"
+
+- name: Create fcitx5 config dirs
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0700"
+  loop:
+    - "{{ fcitx5_dir }}"
+    - "{{ fcitx5_dir }}/conf"
+
+- name: Read the fcitx5 profile
+  ansible.builtin.slurp:
+    src: "{{ fcitx5_dir }}/profile"
+  register: fcitx5_profile_file
+  failed_when: false
+
+- name: Parse the fcitx5 profile
+  ansible.builtin.set_fact:
+    fcitx5_profile_old: "{{ fcitx5_profile_file.content | b64decode if fcitx5_profile_file.content is defined else '' }}"
+
+- name: Refuse a profile with more than one group
+  ansible.builtin.assert:
+    that: "'[Groups/1]' not in fcitx5_profile_old"
+    fail_msg: "{{ fcitx5_dir }}/profile has more than one group; add {{ fcitx5_im }} with fcitx5-configtool"
+    quiet: true
+
+# [name, layout] of each input method, in order; keyboard-us for a new profile
+- name: Add to the input methods - {{ fcitx5_im }}
+  vars:
+    items_old: "{{ fcitx5_profile_old | regex_findall('\\[Groups/0/Items/\\d+\\]\\n(?:#.*\\n)*Name=(.*)\\n(?:#.*\\n)*Layout=(.*)') }}"
+    items: "{{ items_old if items_old else [['keyboard-us', '']] }}"
+  ansible.builtin.set_fact:
+    fcitx5_items: "{{ items if fcitx5_im in (items | map('first')) else items + [[fcitx5_im, '']] }}"
+    fcitx5_group_name: "{{ fcitx5_profile_old | regex_search('(?m)^\\[Groups/0\\]\\n(?:#.*\\n)*Name=(.*)$', '\\1') | default(['Default'], true) | first }}"
+    fcitx5_layout: "{{ fcitx5_profile_old | regex_search('(?m)^Default Layout=(.*)$', '\\1') | default(['us'], true) | first }}"
+    fcitx5_default_im: "{{ fcitx5_profile_old | regex_search('(?m)^DefaultIM=(.*)$', '\\1') | default([fcitx5_im], true) | first }}"
+
+# content as fcitx5 writes it, so fcitx5 rewriting them on exit is not a change.
+# mode 0600 as fcitx5 itself saves them, so the two don't fight over it
+- name: Set fcitx5 config files
+  ansible.builtin.set_fact:
+    fcitx5_files:
+      - dest: "{{ fcitx5_dir }}/profile"
+        content: |+
+          [Groups/0]
+          # Group Name
+          Name={{ fcitx5_group_name }}
+          # Layout
+          Default Layout={{ fcitx5_layout }}
+          # Default Input Method
+          DefaultIM={{ fcitx5_default_im }}
+
+          {% for item in fcitx5_items %}
+          [Groups/0/Items/{{ loop.index0 }}]
+          # Name
+          Name={{ item[0] }}
+          # Layout
+          Layout={{ item[1] }}
+
+          {% endfor %}
+          [GroupOrder]
+          0={{ fcitx5_group_name }}
+
+      # tray icon as text, Noto Sans CJK TC for candidates/menu/tray.
+      # light panel: add TrayTextColor=#000000 and TrayOutlineColor=#ffffff
+      - dest: "{{ fcitx5_dir }}/conf/classicui.conf"
+        content: |
+          # Candidate window font
+          Font="Noto Sans CJK TC 11"
+          # Menu font
+          MenuFont="Noto Sans CJK TC 11"
+          # Tray font
+          TrayFont="Noto Sans CJK TC Bold 10"
+          # Prefer Text Icon
+          PreferTextIcon=True
+
+- name: Check fcitx5 config files
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    content: "{{ item.content }}"
+    mode: "0600"
+  loop: "{{ fcitx5_files }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  check_mode: true
+  register: fcitx5_check
+
+# a running fcitx5 saves its own config on exit and would undo the change
+- name: Stop fcitx5 before changing its config
+  ansible.builtin.command: pkill -u {{ target_user }} -x fcitx5
+  register: fcitx5_stop
+  # must run before the copy below; a handler would only run after it
+  when: fcitx5_check.changed  # noqa: no-handler
+  changed_when: fcitx5_stop.rc == 0
+  failed_when: fcitx5_stop.rc > 1
+
+- name: Fcitx5 config - input methods, tray text icon, fonts
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    content: "{{ item.content }}"
+    mode: "0600"
+  loop: "{{ fcitx5_files }}"
+  loop_control:
+    label: "{{ item.dest }}"
+
+- name: Restart note
+  ansible.builtin.debug:
+    msg: "fcitx5 was stopped: start it again with 'fcitx5 -d' or log out/in"
+  when: fcitx5_stop.rc | default(1) == 0

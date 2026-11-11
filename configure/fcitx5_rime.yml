@@ -1,0 +1,57 @@
+---
+# fcitx5 as input method + Rime with the Mixed Chinese Keyboard Plus schema
+# (rime_mixed) in the input method list. Other input methods in the list (e.g.
+# quick-classic, configure/fcitx5_quick.yml) are kept.
+# Needs: install_packages/fcitx5.yml and fcitx5_rime.yml, and the rime_mixed
+# clone (git_clone/personal.yml). After a change, Deploy from the tray menu.
+- name: Configure fcitx5 with Rime (rime_mixed)
+  hosts: local
+  become: true
+  become_user: "{{ target_user }}"
+  vars:
+    fcitx5_dir: "{{ target_home }}/.config/fcitx5"
+    fcitx5_im: rime
+    rime_mixed_dir: "{{ repos_dir }}/rime_mixed"
+    rime_user_dir: "{{ target_home }}/.local/share/fcitx5/rime"
+  tasks:
+    - name: Create the Rime user folder
+      ansible.builtin.file:
+        path: "{{ rime_user_dir }}"
+        state: directory
+        mode: "0755"
+
+    # built into a temp dir, not rime_mixed/rime/ (the tester's folder).
+    # Creating/removing the temp dir runs every time, so it's not a change
+    - name: Build and install the rime_mixed schema
+      block:
+        - name: Create temp dir for the Rime build
+          ansible.builtin.tempfile:
+            state: directory
+          register: rime_tmp
+          changed_when: false
+
+        # prebuilt dictionaries; Mixed-Chinese-Keyboard-Plus-Dicts is only
+        # needed for ./build.sh --rebuild
+        - name: Build the Rime folder
+          ansible.builtin.command: "{{ rime_mixed_dir }}/build.sh --out {{ rime_tmp.path }}"
+          changed_when: false
+
+        # only the built files are replaced; learned *.userdb, build/,
+        # user.yaml and settings (mixed_quick.custom.yaml) are left alone.
+        # -c compares content, as the fresh build has new timestamps
+        - name: Copy it into the Rime user folder  # noqa: command-instead-of-module - synchronize is built for controller-to-host copies
+          ansible.builtin.command: >-
+            rsync -rc --out-format=%n
+            {{ rime_tmp.path }}/ {{ rime_user_dir }}/
+          register: rime_rsync
+          changed_when: rime_rsync.stdout | length > 0
+      always:
+        - name: Remove Rime temp dir
+          ansible.builtin.file:
+            path: "{{ rime_tmp.path }}"
+            state: absent
+          changed_when: false
+          when: rime_tmp.path is defined
+
+    - name: Configure fcitx5
+      ansible.builtin.import_tasks: tasks/fcitx5.yml

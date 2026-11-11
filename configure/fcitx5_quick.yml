@@ -1,0 +1,16 @@
+---
+# fcitx5 as input method + Quick Classic (速成) in the input method list,
+# tray icon as text (速) and Noto Sans CJK TC for candidates/menu/tray.
+# Other input methods in the list (e.g. rime, configure/fcitx5_rime.yml) are
+# kept. Packages: install_packages/fcitx5.yml and fcitx5_quick.yml.
+# Log out/in afterwards.
+- name: Configure fcitx5 with Quick Classic
+  hosts: local
+  become: true
+  become_user: "{{ target_user }}"
+  vars:
+    fcitx5_dir: "{{ target_home }}/.config/fcitx5"
+    fcitx5_im: quick-classic
+  tasks:
+    - name: Configure fcitx5
+      ansible.builtin.import_tasks: tasks/fcitx5.yml

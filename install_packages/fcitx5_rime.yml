@@ -1,8 +1,8 @@
 ---
 # fcitx5 + Rime, for the Mixed Chinese Keyboard Plus schema (mixed_quick)
-# Packages only. Run after fcitx5_claude.yml (fcitx5, frontends, configtool,
-# im-config, fonts). The schema files are generated separately and copied to
-# ~/.local/share/fcitx5/rime/.
+# Packages only. Run after fcitx5.yml (fcitx5, frontends, configtool,
+# im-config, fonts); can sit next to fcitx5_quick.yml. The schema files are
+# built and copied to ~/.local/share/fcitx5/rime/ by configure/fcitx5_rime.yml.
 - name: Install fcitx5-rime
   hosts: local
   tasks:

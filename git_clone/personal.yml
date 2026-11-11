@@ -49,3 +49,19 @@
         version: main
         key_file: "{{ target_github_key }}"
         accept_hostkey: true
+
+    - name: Clone rime_mixed
+      ansible.builtin.git:
+        repo: 'git@github.com:kaevinlaw/rime_mixed.git'
+        dest: "{{ repos_dir }}/rime_mixed"
+        version: main
+        key_file: "{{ target_github_key }}"
+        accept_hostkey: true
+
+    # rime_mixed's dictionary source; only for its ./build.sh --rebuild,
+    # which expects it next to rime_mixed
+    - name: Clone Mixed-Chinese-Keyboard-Plus-Dicts
+      ansible.builtin.git:
+        repo: 'https://github.com/holleeb/Mixed-Chinese-Keyboard-Plus-Dicts.git'
+        dest: "{{ repos_dir }}/Mixed-Chinese-Keyboard-Plus-Dicts"
+        version: main

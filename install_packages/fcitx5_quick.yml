@@ -1,0 +1,20 @@
+---
+# Quick Classic (速成) for fcitx5, from the fcitx5 table engine
+# Packages only. Run after fcitx5.yml (fcitx5, frontends, configtool,
+# im-config, fonts); can sit next to fcitx5_rime.yml.
+# Config: configure/fcitx5_quick.yml. Settings: ~/vimviki/linux/fcitx5_quick.md
+- name: Install fcitx5 Quick Classic
+  hosts: local
+  tasks:
+    - name: Install fcitx5 Quick Classic
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        state: present
+        name:
+          - fcitx5-table-quick-classic   # pulls fcitx5-table (table engine)
+
+            # not needed:
+            # fcitx5-table-extra       pulls quick5 etc, quick5 lists rare Ext B chars first
+        update_cache: true
+        install_recommends: false
