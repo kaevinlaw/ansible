@@ -55,6 +55,17 @@
           - jq
             # - libncurses5
 
+            # ArtCraft native build dependencies
+          - pkg-config
+          - libxkbcommon-dev
+          - libwayland-dev
+          - libx11-dev
+          - libxrandr-dev
+          - libxi-dev
+          - libgl1-mesa-dev
+          - libgtk-3-dev
+          - libasound2-dev
+
             # android
           - adb
           - fastboot
