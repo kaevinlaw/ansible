@@ -1,0 +1,73 @@
+---
+# Rust via rustup, kept under ~/opt instead of ~/.rustup and ~/.cargo.
+# Because of the custom location, RUSTUP_HOME and CARGO_HOME must be exported
+# in the shell too (the cargo/rustc proxies otherwise look in ~/.rustup and find
+# no toolchain), so ~/.profile gets a managed block. Log out/in afterwards.
+- name: Install Rust toolchain
+  hosts: local
+  become: true
+  become_user: "{{ target_user }}"
+  vars:
+    rustup_home: "{{ user_opt_dir }}/rustup"
+    cargo_home: "{{ user_opt_dir }}/cargo"
+    rustup: "{{ cargo_home }}/bin/rustup"
+  environment:
+    RUSTUP_HOME: "{{ rustup_home }}"
+    CARGO_HOME: "{{ cargo_home }}"
+  tasks:
+    # --no-modify-path: ~/.profile is managed below instead of by rustup
+    - name: Install rustup
+      ansible.builtin.shell: |
+        set -o pipefail
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
+        sh -s -- -y --no-modify-path --default-toolchain stable --profile minimal
+      args:
+        creates: "{{ rustup }}"
+        executable: /bin/bash
+
+    # prints "stable-... unchanged - rustc ..." when already the latest
+    - name: Install or update the stable toolchain
+      ansible.builtin.command: "{{ rustup }} toolchain install stable --profile minimal"
+      register: rust_stable
+      changed_when: "' unchanged - ' not in rust_stable.stdout"
+
+    - name: Get the default toolchain
+      ansible.builtin.command: "{{ rustup }} default"
+      register: rust_default
+      changed_when: false
+      failed_when: false
+
+    - name: Set stable as the default toolchain
+      ansible.builtin.command: "{{ rustup }} default stable"
+      changed_when: true
+      when: not rust_default.stdout.startswith('stable-')
+
+    # prints "downloading component X" only for components not yet installed
+    - name: Install rustfmt and clippy
+      ansible.builtin.command: "{{ rustup }} component add rustfmt clippy"
+      register: rust_components
+      changed_when: "'downloading component' in rust_components.stderr"
+
+    - name: Export the Rust environment in ~/.profile
+      ansible.builtin.blockinfile:
+        path: "{{ target_home }}/.profile"
+        create: true
+        mode: "0644"
+        marker: "# {mark} ANSIBLE MANAGED RUST ENVIRONMENT"
+        block: |
+          export RUSTUP_HOME="{{ rustup_home }}"
+          export CARGO_HOME="{{ cargo_home }}"
+          case ":$PATH:" in
+              *":$CARGO_HOME/bin:"*) ;;
+              *) export PATH="$CARGO_HOME/bin:$PATH" ;;
+          esac
+
+    # added by an earlier rustup install without --no-modify-path; PATH only
+    - name: Remove rustup's own env lines
+      ansible.builtin.lineinfile:
+        path: "{{ item }}"
+        line: '. "{{ cargo_home }}/env"'
+        state: absent
+      loop:
+        - "{{ target_home }}/.profile"
+        - "{{ target_home }}/.bashrc"
