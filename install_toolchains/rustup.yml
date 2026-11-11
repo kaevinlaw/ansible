@@ -42,11 +42,12 @@
       changed_when: true
       when: not rust_default.stdout.startswith('stable-')
 
-    # prints "downloading component X" only for components not yet installed
+    # prints "downloading component X" (or "downloading 2 components") only for
+    # components not yet installed, else "component X is up to date"
     - name: Install rustfmt and clippy
       ansible.builtin.command: "{{ rustup }} component add rustfmt clippy"
       register: rust_components
-      changed_when: "'downloading component' in rust_components.stderr"
+      changed_when: "'downloading' in rust_components.stderr"
 
     - name: Export the Rust environment in ~/.profile
       ansible.builtin.blockinfile:
